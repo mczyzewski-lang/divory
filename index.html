@@ -1476,7 +1476,7 @@ function route(){
   VIEWS.forEach(x=>$('#v-'+x).hidden=x!==v);
   $$('.fab-menu a[data-v]').forEach(a=>a.classList.toggle('on',a.dataset.v===v)); $('#fab-cur').dataset.var=VAR;
   $('#fab-cur').textContent=({lp:'Strona startowa',quiz:'Quiz',wynik:'Wynik'})[v];
-  $('#fab').hidden=v==='quiz'; document.body.dataset.v=v; if(!(VAR==='f'&&v==='wynik')) document.body.classList.remove('fchatmode');
+  $('#fab').hidden=v!=='lp'; document.body.dataset.v=v; if(!(VAR==='f'&&v==='wynik')) document.body.classList.remove('fchatmode');
   if(v==='quiz') renderQuiz(); if(v==='wynik') renderResult();
   window.scrollTo(0,0); fabClose();
 }
