@@ -343,6 +343,7 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .ftab tr:first-child th,.ftab tr:first-child td{border-top:0}
 .ftab th{width:38%;font-weight:800;font-size:.86rem}
 .ftab .s{width:34px;text-align:center}.ftab .s.ok{color:var(--ok);font-weight:800}
+.ftab tr.lkh td{background:var(--gold-soft);border-top:2px solid var(--gold);font-weight:800;font-size:.9rem;color:var(--ink)}
 .ftab tr.lk{background:var(--sunk)}.ftab tr.lk th{color:var(--muted)}
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tiers .t{border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;font-size:.84rem;color:var(--muted)}
@@ -1395,7 +1396,7 @@ function renderF(){
       <h2 style="font-size:1.45rem;padding-right:40px">${nm?nm+', ':''}wstępny Plan Rozwodu</h2>
       <p class="note" style="margin-top:6px;color:var(--ink)">Uzupełnione <b>${known.length} z ${tot}</b> pól. Pozostałe opiekun ustala w 15-minutowej rozmowie.</p>
       <div class="fprog"><i style="width:${Math.round(known.length/tot*100)}%"></i></div>
-      <table class="ftab"><tbody>${known.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td class="s ok">✓</td></tr>`).join('')}${locked.map(r=>`<tr class="lk"><th>${esc(r)}</th><td><span class="blur">ustali opiekun w rozmowie</span></td><td class="s">🔒</td></tr>`).join('')}</tbody></table>
+      <table class="ftab"><tbody>${known.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="lkh"><td colspan="3">🔒 Wymaga krótkiej rozmowy:</td></tr>${locked.map(r=>`<tr class="lk"><th>${esc(r)}</th><td><span class="blur">ustali opiekun w rozmowie</span></td><td class="s">🔒</td></tr>`).join('')}</tbody></table>
       <div class="sales" style="margin-top:16px"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: F, rozmowa z opiekunem w formie czatu, plan w oknie. Telefon: ${phoneOk(A.phone)?'podany':'brak'}. Rozmowa: ${booked||'nieumówiona'}.</div>
       <div class="fcta">${booked?`<p class="okbox" style="margin:0"><b>✓ Rozmowa umówiona: ${booked}.</b> Po niej opiekun uzupełni zablokowane pola.</p>`:`<button class="btn btn-gold" id="f-cta" type="button" style="width:100%">Wybierz godzinę rozmowy i uzupełnij plan →</button>`}</div>
     </div></div>`;
