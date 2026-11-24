@@ -333,10 +333,10 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .fslots .dcols{max-height:250px}
 @media (prefers-reduced-motion:reduce){.fsheet,.fsheet.zoom,.fopen svg,.fopen circle{animation:none}}
 .fchat{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
-.fhead{padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line)}
+.fhead{padding:10px 12px;background:var(--teal-900)}
 .fper{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:0 8px 20px -14px rgba(0,0,0,.35)}
 .fper img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
-.fper b{display:block;color:var(--ink)}.fper span{font-size:.8rem;color:var(--muted)}
+.fper>div{min-width:0}.fper b{display:block;color:var(--ink)}.fper span{display:block;font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fper .chev{margin-left:auto;font-style:normal;color:var(--muted)}
 .fper.swap{animation:fswap .5s cubic-bezier(.2,1.3,.4,1) both;border-color:var(--gold)}
 @keyframes fswap{from{opacity:0;transform:translateY(-8px) scale(.97)}}
@@ -1457,7 +1457,7 @@ function renderF(){
         ${slots.replace('class="fm fslots"','class="fm fslots'+late+'"').replace('--i:4','--j:4')}`;
   const body=gateMsg+planCard+rest; pick.fjust=false;
   let h=`<div class="fwrap"><div class="fchat${an}">
-      <div class="fhead"><div class="fper${late?' swap':''}">${mat?`<img src="${IMG_M}" alt="" width="48" height="48"><div><b>Mateusz Malczewski</b><span>opiekun sprawy · rozwody ${spec}</span></div>`:`<img src="${IMG_K}" alt="" width="48" height="48"><div><b>Kamil Jura</b><span>prawnik i mediator, współzałożyciel Nowego Etapu</span></div>`}<i class="chev" aria-hidden="true">▾</i></div>${un&&!mat?`<div class="fdrop" aria-hidden="true"><span class="fdl">Opiekunowie spraw</span><div class="fo" style="--k:0"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody z orzekaniem o winie</span></div></div><div class="fo" style="--k:1"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody ${a.kids==='yes'?'małżeństw bez małoletnich dzieci':'małżeństw z dziećmi'}</span></div></div><div class="fo sel" style="--k:2"><img src="${IMG_M}" alt="" width="36" height="36"><div><b>Mateusz Malczewski</b><span>rozwody ${spec}</span></div><em>✓</em></div></div>`:''}</div>
+      <div class="fhead"><div class="fper${late?' swap':''}">${mat?`<img src="${IMG_M}" alt="" width="48" height="48"><div><b>Mateusz Malczewski</b><span>opiekun sprawy · ${a.kids==='yes'?'rozwody z dziećmi':'rozwody bez dzieci'}</span></div>`:`<img src="${IMG_K}" alt="" width="48" height="48"><div><b>Kamil Jura</b><span>prawnik i mediator, Nowy Etap</span></div>`}<i class="chev" aria-hidden="true">▾</i></div>${un&&!mat?`<div class="fdrop" aria-hidden="true"><span class="fdl">Opiekunowie spraw</span><div class="fo" style="--k:0"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody z orzekaniem o winie</span></div></div><div class="fo" style="--k:1"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody ${a.kids==='yes'?'małżeństw bez małoletnich dzieci':'małżeństw z dziećmi'}</span></div></div><div class="fo sel" style="--k:2"><img src="${IMG_M}" alt="" width="36" height="36"><div><b>Mateusz Malczewski</b><span>rozwody ${spec}</span></div><em>✓</em></div></div>`:''}</div>
       <div class="fmsgs">
         ${body}
       </div>
