@@ -353,8 +353,11 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .ftab tr:first-child th,.ftab tr:first-child td{border-top:0}
 .ftab th{width:38%;font-weight:800;font-size:.86rem}
 .ftab .s{width:34px;text-align:center}.ftab .s.ok{color:var(--ok);font-weight:800}
+.ftab tr.sech td{background:var(--teal-100);font-weight:800;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-700)}
+.fplan.gray{border:1px solid var(--line);background:var(--sunk);padding:10px 12px}
+.fplan.gray b{font-size:.95rem}.fplan.gray span{font-size:.8rem;color:var(--muted)}.fplan.gray em{color:var(--teal-700);font-size:.86rem}
 .ftab tr.lkh td{background:var(--gold-soft);border-top:2px solid var(--gold);font-weight:800;font-size:.9rem;color:var(--ink)}
-.ftab tr.lk{background:var(--sunk)}.ftab tr.lk th{color:var(--muted)}
+.ftab tr.lk{background:var(--sunk)}.ftab tr.lk th{color:var(--ink);width:auto;font-size:.92rem}
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tiers .t{border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;font-size:.84rem;color:var(--muted)}
 .tiers .t b{font-size:1rem;color:var(--ink)}
@@ -1375,15 +1378,38 @@ function renderResult(){
 
 
 /* ---------- wersja F: rozmowa z opiekunem i plan w tabeli ---------- */
+function facts(a){ const f=[];
+  f.push(['Dzieci',a.kids==='yes'?'wspólne małoletnie dzieci':'bez małoletnich dzieci','dzieci',a.kids==='yes'?'wspólne dzieci':'bez małoletnich dzieci']);
+  const st={decided:'decyzja podjęta',talked:'rozmawialiście już o rozwodzie',considering:'jeszcze się zastanawiasz',court:'sprawa jest już w sądzie'}[a.stage]; if(st) f.push(['Etap',st,'etap',st]);
+  const pa={yes:'też chce rozwodu',unsure:'trudno powiedzieć, czy chce rozwodu',no:'nie chce rozwodu'}[a.partner]; if(pa) f.push(['Druga strona',pa,'druga strona',a.partner==='yes'?'druga strona też chce rozwodu':a.partner==='no'?'druga strona nie chce rozwodu':'druga strona niepewna']);
+  const ho={credit:'wspólne, z kredytem',yes:'wspólne, bez kredytu',no:'brak wspólnego'}[a.home]; if(ho) f.push(['Mieszkanie lub dom',ho,'mieszkanie',a.home==='credit'?'mieszkanie z kredytem':a.home==='yes'?'wspólne mieszkanie':'bez wspólnego mieszkania']);
+  const fa={no:'bez orzekania o winie',yes:'z orzekaniem o winie małżonka',them:'druga strona może chcieć orzekania o winie',dk:'do wyjaśnienia'}[a.fault]; if(fa) f.push(['Wina',fa,'wina',a.fault==='no'?'bez orzekania o winie':a.fault==='yes'?'z orzekaniem o winie':'wina do wyjaśnienia']);
+  const co={ok:'rozmawiacie normalnie',hard:'kontakt jest trudny',none:'nie macie kontaktu',unsafe:'nie czujesz się bezpiecznie'}[a.contact]; if(co) f.push(['Kontakt z drugą stroną',co,'kontakt',co]);
+  if(a.together) f.push(['Mieszkacie',a.together==='yes'?'razem':'osobno','mieszkacie',a.together==='yes'?'mieszkacie razem':'mieszkacie osobno']);
+  if(a.city) f.push(['Miasto',a.city,'miasto',a.city]);
+  const pr=(a.pri||[]).filter(x=>x!=='skip').map(x=>(PRI.find(p=>p[0]===x)||['',x])[1]); if(pr.length) f.push(['Najważniejsze dla Ciebie',pr.join(', ').toLowerCase(),'',null]);
+  return f; }
+function hooks(a,c){ const h=['Dokładna cena dla Was obojga, co do złotówki, i jak ją podzielić między siebie','Kiedy realnie możesz mieć wyrok: aktualny czas oczekiwania w sądzie ('+c.replace(/^Sąd Okręgowy /,'SO ')+')'];
+  if(a.partner&&a.partner!=='yes') h.push('Jak powiedzieć o rozwodzie tak, żeby druga strona usiadła do rozmów, a nie poszła po prawnika');
+  else h.push('Co ustalić w pierwszej kolejności, żeby wystarczyła jedna rozprawa');
+  if(a.fault&&a.fault!=='no') h.push('Jak zamknąć temat winy bez świadków, dowodów i dodatkowych rozpraw');
+  if(a.home==='credit') h.push('Trzy sposoby na mieszkanie z kredytem i który pasuje do Waszej sytuacji');
+  else if(a.home==='yes') h.push('Jak podzielić mieszkanie bez osobnej sprawy o podział majątku');
+  if(a.kids==='yes') h.push('Jak ustalić opiekę i alimenty tak, żeby dzieci nie musiały w tym uczestniczyć');
+  if(a.contact==='hard'||a.contact==='none') h.push('Jak prowadzić ustalenia, kiedy trudno Wam ze sobą rozmawiać');
+  if(a.together==='yes') h.push('Czego nie robić, dopóki mieszkacie razem, żeby nie pogorszyć swojej sytuacji');
+  h.push('Największy błąd przed złożeniem pozwu w Twojej sytuacji');
+  h.push('Twój harmonogram z datami: od dziś do wyroku');
+  return h; }
 function renderF(){
   document.body.classList.add('fchatmode');
   if(!pick.fopened){ pick.fopened=true; $('#res').innerHTML='<div class="fwrap"><div class="fopen"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h32a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H22l-9 7v-7H8a3 3 0 0 1-3-3V13a3 3 0 0 1 3-3z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle class="d1" cx="16" cy="22" r="2.4"/><circle class="d2" cx="24" cy="22" r="2.4"/><circle class="d3" cx="32" cy="22" r="2.4"/></svg><b>Otwieram okno rozmowy…</b></div></div>'; setTimeout(renderF,1400); return; }
-  const a=A, c=court()||'ustalimy w rozmowie', p=path(), P=personal(a), U=unknowns(a,c), dd=days();
+  const a=A, c=court()||'ustalimy w rozmowie', p=path(), P=personal(a), HK=hooks(a,c), FX=facts(a), dd=days(); const today=new Date(); const dstr=today.getDate()+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+today.getFullYear();
   const nm=a.name?esc(a.name):'';
   const spec=a.kids==='yes'?'małżeństw z dziećmi':'małżeństw bez małoletnich dzieci';
   const st=booked?'done':(pick.fslot?'phone':'pick');
   const known=[['Ścieżka',esc(p.name)],['Właściwy sąd',esc(c)],['Kwestie do ustalenia',P.issues.map(esc).join(', ')],['Dokumenty do przygotowania',P.docs.length+' pozycji, m.in. '+P.docs.slice(0,2).map(esc).join(', ')],['Opłata sądowa','600 zł'+(a.fault==='no'?', z czego 300 zł wraca':'')],['Liczba rozpraw','zwykle jedna, do 60 minut']];
-  const locked=U.map(u=>u[0]).concat(['Harmonogram z datami','Podział kosztu między Was',a.kids==='yes'?'Projekt porozumienia rodzicielskiego':'Projekt porozumienia','Kolejność ustaleń w mediacji']);
+  const locked=HK;
   const tot=known.length+locked.length;
   const grid=`<div class="dcols">${dd.map((x,i)=>`<div class="dcol"><div class="dh"><b>${dName(i,x)}</b><small>${x.getDate()}.${String(x.getMonth()+1).padStart(2,'0')}</small></div>${DG[i].map(t=>t[0]==='!'?`<s>${t.slice(1)}</s>`:`<button type="button" data-fslot="${t}" data-fday="${i}">${t}</button>`).join('')}</div>`).join('')}</div>`;
   const an=pick.fseen?'':' anim';
@@ -1395,12 +1421,12 @@ function renderF(){
   const gateMsg=`<span class="fwho">Kamil Jura</span>`+(un?`<div class="fm">${intro}</div><div class="fu">${esc(fmtPh())}</div>`
     :fs==='code'?`<div class="fm">${intro}</div><div class="fu">${esc(fmtPh())}</div><div class="fm" id="f-last">Wysłaliśmy kod SMS na numer <b style="white-space:nowrap">${esc(fmtPh())}</b>. Wpisz go, żeby zabezpieczyć rozmowę.<input type="text" id="f-otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="• • • •" style="margin-top:10px"><button class="btn btn-gold" id="f-unl" type="button" style="width:100%;margin-top:10px" disabled>Potwierdzam i odbieram plan</button><p class="note" style="margin-top:8px">Kod nie doszedł albo numer jest błędny? <button class="linkbtn" id="f-chg" type="button" style="padding:0">Zmień numer</button></p><p class="note" style="margin-top:2px">W prototypie zadziała dowolne 4 cyfry.</p></div>`
     :`<div class="fm" style="--i:0">${intro}<p style="margin-top:8px">Dostęp do tego okna będziesz mieć tylko Ty, przez swój numer telefonu. <b>Wpisz go, żeby zabezpieczyć rozmowę.</b> Spokojnie, nie zadzwonimy bez Twojej zgody.</p><div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-gph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><button class="btn btn-gold" id="f-send" type="button" style="width:100%;margin-top:10px" disabled>Zabezpiecz rozmowę i odbierz plan</button><p class="note" style="margin-top:6px">Wyślemy SMS z 4-cyfrowym kodem, od nadawcy „K Jura”, bez słowa „rozwód”.</p></div>`);
-  const planCard=un?`<div class="fsec">🔒 Rozmowa zabezpieczona. Czat jest przypisany do numeru <b style="white-space:nowrap">${esc(fmtPh())}</b>.</div><div class="fm">Oto Twój wstępny Plan Rozwodu.<button class="fplan" id="f-open" type="button"><b>📄 Wstępny Plan Rozwodu</b><span>Ścieżka: ${esc(p.name)}</span><span>Właściwy sąd: ${esc(c)}</span><span>Kwestie do ustalenia: ${P.issues.map(esc).join(', ')}</span><span>Dokumenty: ${P.docs.length} pozycji</span><em>Otwórz cały plan →</em></button></div>`
+  const planCard=un?`<div class="fsec">🔒 Rozmowa zabezpieczona. Czat jest przypisany do numeru <b style="white-space:nowrap">${esc(fmtPh())}</b>.</div><div class="fm">Oto Twój wstępny Plan Rozwodu.<button class="fplan gray" id="f-open" type="button"><b>📄 Wstępny Plan Rozwodu – ${nm||'Twój plan'} (${dstr})</b><span>${FX.filter(x=>x[3]).map(x=>esc(x[3])).join(', ')}</span><em>Otwórz plan →</em></button></div>`
     :`<div class="fm" style="--i:1"><div class="fplan lk" aria-hidden="true"><b>🔒 Wstępny Plan Rozwodu</b><span>Ścieżka: <i class="blur">${esc(p.name)}</i></span><span>Właściwy sąd: <i class="blur">${esc(c)}</i></span><span>Kwestie do ustalenia: <i class="blur">${P.issues.map(esc).join(', ')}</i></span><span>Dokumenty: <i class="blur">${P.docs.length} pozycji</i></span><em>Pojawi się tutaj po zabezpieczeniu rozmowy</em></div></div>`;
   const rest=!un?'':!mat?`<div class="fstat" id="f-stat"><i class="spin"></i>Dobieram opiekuna sprawy do Twojego planu…</div>`
     :`<div class="fsys${late}" id="f-sys" style="--j:0">Rozmowę przejmuje opiekun sprawy</div><span class="fwho${late}" style="--j:0">Mateusz Malczewski</span>
         <div class="fm${late}" style="--j:1">Dzień dobry${nm?', '+nm:''}. Specjalizuję się w rozwodach <b>${spec}</b> i z chęcią pomogę Ci dokończyć plan.</div>
-        <div class="fm${late}" style="--j:2">W ciągu <b>15 minut</b> przejdziemy przez te tematy:<ul>${U.map(u=>`<li>${esc(u[0])}</li>`).join('')}</ul><p style="margin-top:8px">Po rozmowie Twój plan pełny będzie gotowy, niezależnie od tego, czy zdecydujesz się na współpracę.</p></div>
+        <div class="fm${late}" style="--j:2">W ciągu <b>15 minut</b> przejdziemy przez te tematy:<ul>${HK.slice(0,5).map(u=>`<li>${esc(u)}</li>`).join('')}</ul><p style="margin-top:8px">Po rozmowie Twój plan pełny będzie gotowy, niezależnie od tego, czy zdecydujesz się na współpracę.</p></div>
         <div class="fm${late}" style="--j:3"><b>Rozmowa do niczego nie zobowiązuje.</b> Poniżej moje wolne terminy. Wybierz ten, który Ci pasuje.</div>
         ${slots.replace('class="fm fslots"','class="fm fslots'+late+'"').replace('--i:4','--j:4')}`;
   const body=gateMsg+planCard+rest; pick.fjust=false;
@@ -1413,10 +1439,10 @@ function renderF(){
     </div></div>`;
   if(pick.fview==='plan'){
     h+=`<div class="fmodal" id="f-modal"><div class="fsheet" role="dialog" aria-label="Wstępny Plan Rozwodu"><button class="fclose" id="f-close" type="button" aria-label="Zamknij">✕</button>
-      <h2 style="font-size:1.45rem;padding-right:40px">${nm?nm+', ':''}wstępny Plan Rozwodu</h2>
-      <p class="note" style="margin-top:6px;color:var(--ink)">Uzupełnione <b>${known.length} z ${tot}</b> pól. Pozostałe opiekun ustala w 15-minutowej rozmowie.</p>
-      <div class="fprog"><i style="width:${Math.round(known.length/tot*100)}%"></i></div>
-      <table class="ftab"><tbody>${known.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="lkh"><td colspan="3">🔒 Wymaga krótkiej rozmowy:</td></tr>${locked.map(r=>`<tr class="lk"><th>${esc(r)}</th><td><span class="blur">ustali opiekun w rozmowie</span></td><td class="s">🔒</td></tr>`).join('')}</tbody></table>
+      <h2 style="font-size:1.35rem;padding-right:40px">Wstępny Plan Rozwodu – ${nm||'Twój plan'} <span style="color:var(--muted);font-size:.9rem;font-family:var(--f-body)">(${dstr})</span></h2>
+      <p class="note" style="margin-top:6px;color:var(--ink)">Uzupełnione <b>${known.length+FX.length} z ${tot+FX.length}</b> pól. Pozostałe opiekun ustala w 15-minutowej rozmowie.</p>
+      <div class="fprog"><i style="width:${Math.round((known.length+FX.length)/(tot+FX.length)*100)}%"></i></div>
+      <table class="ftab"><tbody><tr class="sech"><td colspan="3">Twoja sytuacja (z Twoich odpowiedzi, nie musisz do tego wracać)</td></tr>${FX.map(r=>`<tr><th>${r[0]}</th><td>${esc(r[1])}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="sech"><td colspan="3">Plan wstępny</td></tr>${known.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="lkh"><td colspan="3">🔒 Wymaga krótkiej rozmowy:</td></tr>${locked.map(r=>`<tr class="lk"><th colspan="2">${esc(r)}<span class="blur" style="display:block;margin-top:3px;font-weight:400;font-size:.84rem">odpowiedź ustali opiekun w rozmowie</span></th><td class="s">🔒</td></tr>`).join('')}</tbody></table>
       <div class="sales" style="margin-top:16px"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: F, czat (Kamil Jura, potem opiekun sprawy), plan odblokowany numerem i kodem SMS. Telefon: ${phoneOk(A.phone)?'podany':'brak'}. Rozmowa: ${booked||'nieumówiona'}.</div>
       <div class="fcta">${booked?`<p class="okbox" style="margin:0"><b>✓ Rozmowa umówiona: ${booked}.</b> Po niej opiekun uzupełni zablokowane pola.</p>`:`<button class="btn btn-gold" id="f-cta" type="button" style="width:100%">Wybierz godzinę rozmowy i uzupełnij plan →</button>`}</div>
     </div></div>`;
