@@ -345,6 +345,12 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 @media (prefers-reduced-motion:reduce){.fchat.anim .fm{animation:none}}
 .fplan{display:grid;gap:2px;width:100%;margin-top:10px;text-align:left;border:1.5px solid var(--gold);background:var(--gold-soft);border-radius:12px;padding:12px 14px;color:var(--ink)}
 .fplan span{font-size:.84rem;color:var(--muted)}.fplan em{font-style:normal;font-weight:800;color:var(--gold-2);margin-top:4px}
+.fwho{align-self:flex-start;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:4px 0 -4px 2px}
+.fsys{align-self:center;display:flex;align-items:center;gap:10px;width:100%;margin:10px 0 2px;font-size:.78rem;font-weight:800;color:var(--gold-2);text-transform:uppercase;letter-spacing:.08em}
+.fsys::before,.fsys::after{content:"";flex:1;height:1px;background:var(--gold)}
+.fstat{align-self:flex-start;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;background:var(--sunk);font-size:.9rem;font-weight:700;color:var(--ink)}
+.fstat .spin{width:18px;height:18px;border-width:3px}
+.fchat .fsys.late,.fchat .fwho.late{animation:fmin .45s .2s both}
 .fplan.lk{border-style:dashed;background:var(--sunk);cursor:default}
 .fplan.lk span{color:var(--ink)}.fplan.lk i{font-style:normal}
 .fchat .fm.late{animation:fmin .45s calc(var(--j,0)*.7s + .3s) both}
@@ -1392,23 +1398,26 @@ function renderF(){
   const slots=st==='pick'?`<div class="fm fslots" style="--i:4"><div class="dgrid" style="margin:0;border:0;padding:0">${grid}<button class="linkbtn" id="f-more" type="button">⌄ Zobacz więcej godzin</button></div></div>`
     :st==='phone'?`<div class="fu">${esc(pick.fslot)}</div><div class="fm" id="f-last">Zapisałem wstępnie termin: <b>${esc(pick.fslot)}</b>. Na jaki numer mam zadzwonić?<div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-ph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456"></div><button class="btn btn-gold" id="f-ok" type="button" style="width:100%;margin-top:10px" disabled>Potwierdzam rozmowę</button><p class="note" style="margin-top:6px">Dzwonię tylko o tej porze. <button class="linkbtn" id="f-x" type="button" style="padding:0">zmień termin</button></p></div>`
     :`<div class="fu">${esc(booked)}</div><div class="fm" id="f-last">Dziękuję. Zadzwonię <b>${esc(booked.replace(', ',' o '))}</b>. Wcześniej wyślę dyskretne przypomnienie SMS-em, od nadawcy „K Jura”, bez słowa „rozwód”.</div>`;
-  const un=!!A.funl, fs=pick.fph||'need', late=pick.fjust?' late':'';
-  const gateMsg=un?`<div class="fu">${esc(fmtPh())}</div>`
-    :fs==='code'?`<div class="fu">${esc(fmtPh())}</div><div class="fm" id="f-last">Wysłałem kod SMS na numer <b style="white-space:nowrap">${esc(fmtPh())}</b>. Wpisz go, żeby odblokować plan.<input type="text" id="f-otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="• • • •" style="margin-top:10px"><button class="btn btn-gold" id="f-unl" type="button" style="width:100%;margin-top:10px" disabled>Odblokuj Plan Rozwodu</button><p class="note" style="margin-top:8px">Kod nie doszedł albo numer jest błędny? <button class="linkbtn" id="f-chg" type="button" style="padding:0">Zmień numer</button></p><p class="note" style="margin-top:2px">W prototypie zadziała dowolne 4 cyfry.</p></div>`
-    :`<div class="fm" style="--i:1">Przygotowałem dla Ciebie automatyczny wstępny Plan Rozwodu. <b>Brakuje mi jeszcze Twojego numeru telefonu, żeby go odblokować.</b> Spokojnie, nie dzwonimy bez Twojej zgody.<div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-gph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><button class="btn btn-gold" id="f-send" type="button" style="width:100%;margin-top:10px" disabled>Wpisz numer i odblokuj Plan Rozwodu</button><p class="note" style="margin-top:6px">Wyślemy SMS z 4-cyfrowym kodem, od nadawcy „K Jura”, bez słowa „rozwód”.</p></div>`;
-  const planCard=un?`<div class="fm${late}" style="--j:0">Dziękuję, plan jest odblokowany.<button class="fplan" id="f-open" type="button"><b>📄 Wstępny Plan Rozwodu</b><span>${esc(p.name)} · ${esc(c)}</span><em>Otwórz plan →</em></button></div>`
-    :`<div class="fm" style="--i:2"><div class="fplan lk" aria-hidden="true"><b>🔒 Wstępny Plan Rozwodu</b><span>Ścieżka: <i class="blur">${esc(p.name)}</i></span><span>Właściwy sąd: <i class="blur">${esc(c)}</i></span><span>Kwestie do ustalenia: <i class="blur">${P.issues.map(esc).join(', ')}</i></span><span>Dokumenty: <i class="blur">${P.docs.length} pozycji</i></span><em>Odblokujesz go numerem telefonu</em></div></div>`;
-  const rest=un?`<div class="fm${late}" style="--j:1">Żeby dookreślić poniższe rzeczy, potrzebuję <b>15 minut rozmowy</b>:<ul>${U.map(u=>`<li>${esc(u[0])}</li>`).join('')}</ul></div>
-        <div class="fm${late}" style="--j:2">Poniżej moje dostępne terminy. Warto któryś zarezerwować. <b>Rozmowa do niczego nie zobowiązuje.</b> Omówimy plan wstępny i pełny.</div>
-        ${slots}`:'';
+  const un=!!A.funl, fs=pick.fph||'need', mat=un&&pick.fstage!=='match', late=pick.fjust?' late':'';
+  const intro=`${nm?nm+', w':'W'}ygenerowaliśmy dla Ciebie bezpłatny wstępny Plan Rozwodu.`;
+  const gateMsg=`<span class="fwho">Kamil Jura</span>`+(un?`<div class="fm">${intro}</div><div class="fu">${esc(fmtPh())}</div>`
+    :fs==='code'?`<div class="fm">${intro}</div><div class="fu">${esc(fmtPh())}</div><div class="fm" id="f-last">Wysłaliśmy kod SMS na numer <b style="white-space:nowrap">${esc(fmtPh())}</b>. Wpisz go, żeby odblokować plan.<input type="text" id="f-otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="• • • •" style="margin-top:10px"><button class="btn btn-gold" id="f-unl" type="button" style="width:100%;margin-top:10px" disabled>Odblokuj Plan Rozwodu</button><p class="note" style="margin-top:8px">Kod nie doszedł albo numer jest błędny? <button class="linkbtn" id="f-chg" type="button" style="padding:0">Zmień numer</button></p><p class="note" style="margin-top:2px">W prototypie zadziała dowolne 4 cyfry.</p></div>`
+    :`<div class="fm" style="--i:0">${intro} <b>Wpisz numer telefonu, żeby go odblokować.</b> Spokojnie, nie zadzwonimy bez Twojej zgody.<div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-gph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><button class="btn btn-gold" id="f-send" type="button" style="width:100%;margin-top:10px" disabled>Odblokuj Plan Rozwodu</button><p class="note" style="margin-top:6px">Wyślemy SMS z 4-cyfrowym kodem, od nadawcy „K Jura”, bez słowa „rozwód”.</p></div>`);
+  const planCard=un?`<div class="fm">Plan jest odblokowany.<button class="fplan" id="f-open" type="button"><b>📄 Wstępny Plan Rozwodu</b><span>Ścieżka: ${esc(p.name)}</span><span>Właściwy sąd: ${esc(c)}</span><span>Kwestie do ustalenia: ${P.issues.map(esc).join(', ')}</span><span>Dokumenty: ${P.docs.length} pozycji</span><em>Otwórz cały plan →</em></button></div>`
+    :`<div class="fm" style="--i:1"><div class="fplan lk" aria-hidden="true"><b>🔒 Wstępny Plan Rozwodu</b><span>Ścieżka: <i class="blur">${esc(p.name)}</i></span><span>Właściwy sąd: <i class="blur">${esc(c)}</i></span><span>Kwestie do ustalenia: <i class="blur">${P.issues.map(esc).join(', ')}</i></span><span>Dokumenty: <i class="blur">${P.docs.length} pozycji</i></span><em>Odblokujesz go numerem telefonu</em></div></div>`;
+  const rest=!un?'':!mat?`<div class="fstat" id="f-stat"><i class="spin"></i>Dobieram opiekuna sprawy do Twojego planu…</div>`
+    :`<div class="fsys${late}" id="f-sys" style="--j:0">Rozmowę przejmuje opiekun sprawy</div><span class="fwho${late}" style="--j:0">Mateusz Malczewski</span>
+        <div class="fm${late}" style="--j:1">Dzień dobry${nm?', '+nm:''}. Specjalizuję się w rozwodach <b>${spec}</b> i z chęcią pomogę Ci dokończyć plan.</div>
+        <div class="fm${late}" style="--j:2">W ciągu <b>15 minut</b> przejdziemy przez te tematy:<ul>${U.map(u=>`<li>${esc(u[0])}</li>`).join('')}</ul><p style="margin-top:8px">Po rozmowie Twój plan pełny będzie gotowy, niezależnie od tego, czy zdecydujesz się na współpracę.</p></div>
+        <div class="fm${late}" style="--j:3"><b>Rozmowa do niczego nie zobowiązuje.</b> Poniżej moje wolne terminy. Wybierz ten, który Ci pasuje.</div>
+        ${slots.replace('class="fm fslots"','class="fm fslots'+late+'"').replace('--i:4','--j:4')}`;
   const body=gateMsg+planCard+rest; pick.fjust=false;
   let h=`<div class="fwrap"><div class="fchat${an}">
-      <div class="fhead"><img src="${IMG_M}" alt="" width="52" height="52"><div><b>Mateusz Malczewski</b><span>opiekun klienta · rozwody ${spec}</span></div></div>
+      <div class="fhead">${mat?`<img src="${IMG_M}" alt="" width="52" height="52"><div><b>Mateusz Malczewski</b><span>opiekun sprawy · rozwody ${spec}</span></div>`:`<img src="${IMG_K}" alt="" width="52" height="52"><div><b>Kamil Jura</b><span>prawnik i mediator, współzałożyciel Nowego Etapu</span></div>`}</div>
       <div class="fmsgs">
-        <div class="fm" style="--i:0">Dzień dobry${nm?', '+nm:''}. Specjalizuję się w rozwodach <b>${spec}</b>.</div>
         ${body}
       </div>
-      <p class="note fauto">Wiadomość powitalna jest wysyłana automatycznie. Mateusz odpisuje osobiście od poniedziałku do piątku, 9:00–19:00.</p>
+      <p class="note fauto">Wiadomości powitalne są wysyłane automatycznie. Mateusz odpisuje osobiście od poniedziałku do piątku, 9:00–19:00.</p>
     </div></div>`;
   if(pick.fview==='plan'){
     h+=`<div class="fmodal" id="f-modal"><div class="fsheet" role="dialog" aria-label="Wstępny Plan Rozwodu"><button class="fclose" id="f-close" type="button" aria-label="Zamknij">✕</button>
@@ -1416,7 +1425,7 @@ function renderF(){
       <p class="note" style="margin-top:6px;color:var(--ink)">Uzupełnione <b>${known.length} z ${tot}</b> pól. Pozostałe opiekun ustala w 15-minutowej rozmowie.</p>
       <div class="fprog"><i style="width:${Math.round(known.length/tot*100)}%"></i></div>
       <table class="ftab"><tbody>${known.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="lkh"><td colspan="3">🔒 Wymaga krótkiej rozmowy:</td></tr>${locked.map(r=>`<tr class="lk"><th>${esc(r)}</th><td><span class="blur">ustali opiekun w rozmowie</span></td><td class="s">🔒</td></tr>`).join('')}</tbody></table>
-      <div class="sales" style="margin-top:16px"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: F, czat z opiekunem, plan odblokowany numerem i kodem SMS. Telefon: ${phoneOk(A.phone)?'podany':'brak'}. Rozmowa: ${booked||'nieumówiona'}.</div>
+      <div class="sales" style="margin-top:16px"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: F, czat (Kamil Jura, potem opiekun sprawy), plan odblokowany numerem i kodem SMS. Telefon: ${phoneOk(A.phone)?'podany':'brak'}. Rozmowa: ${booked||'nieumówiona'}.</div>
       <div class="fcta">${booked?`<p class="okbox" style="margin:0"><b>✓ Rozmowa umówiona: ${booked}.</b> Po niej opiekun uzupełni zablokowane pola.</p>`:`<button class="btn btn-gold" id="f-cta" type="button" style="width:100%">Wybierz godzinę rozmowy i uzupełnij plan →</button>`}</div>
     </div></div>`;
   }
@@ -1436,7 +1445,7 @@ function renderF(){
   const mr=$('#f-more'); if(mr) mr.onclick=()=>{ const r=mr.getBoundingClientRect(); pick.fo={x:Math.round((r.left+r.width/2)/innerWidth*100),y:Math.round((r.top+r.height/2)/innerHeight*100)}; pick.fcal=true; pick.fview='chat'; renderF(); };
   $$('[data-fslot]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.fday, x=dd[i], n=dName(i,x).toLowerCase(); pick.fslot=(i===0?'dziś':n==='jutro'?'jutro':n+' '+x.getDate()+'.'+String(x.getMonth()+1).padStart(2,'0'))+', '+b.dataset.fslot; pick.fcal=false; pick.fview='chat'; if(A.funl&&phoneOk(A.phone)){ booked=pick.fslot; } renderF(); const l=$('#f-last'); if(l) l.scrollIntoView({behavior:'smooth',block:'center'}); });
   const gp=$('#f-gph'); if(gp){ const ck=()=>{ $('#f-send').disabled=!phoneOk(gp.value); }; gp.oninput=ck; ck(); $('#f-send').onclick=()=>{ A.phone=gp.value; save(); pick.fph='code'; renderF(); const o=$('#f-otp'); if(o) o.focus(); }; }
-  const ot=$('#f-otp'); if(ot){ ot.oninput=()=>{ ot.value=ot.value.replace(/\D/g,'').slice(0,4); $('#f-unl').disabled=ot.value.length!==4; }; $('#f-unl').onclick=()=>{ A.funl=true; save(); pick.fjust=true; pick.fview='plan'; renderF(); }; $('#f-chg').onclick=()=>{ pick.fph='need'; renderF(); const g=$('#f-gph'); if(g) g.focus(); }; }
+  const ot=$('#f-otp'); if(ot){ ot.oninput=()=>{ ot.value=ot.value.replace(/\D/g,'').slice(0,4); $('#f-unl').disabled=ot.value.length!==4; }; $('#f-unl').onclick=()=>{ A.funl=true; save(); pick.fstage='match'; pick.fview='chat'; renderF(); const x=$('#f-stat'); if(x) x.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>{ if(pick.fstage!=='match') return; pick.fstage='mat'; pick.fjust=true; renderF(); const y=$('#f-sys'); if(y) y.scrollIntoView({behavior:'smooth',block:'start'}); },2400); }; $('#f-chg').onclick=()=>{ pick.fph='need'; renderF(); const g=$('#f-gph'); if(g) g.focus(); }; }
   const fp=$('#f-ph'); if(fp){ fp.oninput=()=>{ $('#f-ok').disabled=!phoneOk(fp.value); }; $('#f-ok').onclick=()=>{ A.phone=fp.value; save(); booked=pick.fslot; renderF(); const l=$('#f-last'); if(l) l.scrollIntoView({behavior:'smooth',block:'center'}); }; $('#f-x').onclick=()=>{ pick.fslot=null; renderF(); }; }
 }
 
