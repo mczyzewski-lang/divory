@@ -300,6 +300,8 @@ footer.ft{padding-block:28px 90px;font-size:.8rem;color:var(--muted)}
 .smsprev span{display:block;font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:4px}
 .smsprev .bub{background:var(--sunk);border-radius:14px 14px 14px 4px;padding:9px 12px;font-size:.84rem;line-height:1.4;color:var(--ink);max-width:92%}
 .smsprev .bub b{display:block;font-size:.72rem;color:var(--muted);margin-bottom:2px}
+.dchips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.dchips span{background:var(--ok-soft);border-radius:999px;padding:5px 12px;font-size:.84rem;font-weight:700}
 .chal{margin-top:12px;padding:14px;border-radius:12px;border:1.5px solid var(--gold);background:var(--gold-soft);color:var(--ink)}
 .chal>span{display:block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--gold-2)}
 .chal>b{display:block;margin-top:4px;font-family:var(--f-display);font-weight:400;font-size:1.2rem;line-height:1.25}
@@ -821,6 +823,7 @@ select.inl{display:inline-block;width:auto;padding:4px 8px;font-weight:700;borde
       <option>rozwód a mieszkanie i kredyt</option>
     </select>
     <span class="eyebrow">Wersja lejka</span>
+    <a href="#lp" data-var="d">D: nowy quiz z końcówką V3 (imię, termin, numer)</a>
     <a href="#lp" data-var="c">C: e-mail, numer (plan SMS-em), potem termin</a>
     <a href="#lp" data-var="b">B: termin, potem numer do rozmowy</a>
     <a href="#lp" data-var="a">A: plan od razu, rezerwacja w planie</a>
@@ -885,7 +888,9 @@ const S=[
  {id:'pri',t:'Co jest dla Ciebie najważniejsze?',multi:true,sub:'Zaznacz wszystko, co pasuje.',o:PRI.map(p=>[p[0],p[1],0]),filter:a=>p=>!(p[0]==='kids'&&a.kids!=='yes')&&!(p[0]==='property'&&a.home==='no')},
  {id:'e-cost',type:'r',render:()=>['Ile kosztuje rozwód?','<p style="margin-top:0">Z nami zapłacicie zwykle <b style="color:#fff">kilkukrotnie mniej</b> niż przy dwóch tradycyjnych kancelariach.</p><div class="bars" role="img" aria-label="Koszt dla pary: dwie kancelarie średnio ok. 60 000 zł, Nowy Etap kilka tysięcy zł"><div class="lb">Para: 2× 30 tys. zł<b>średnio ok. 60&nbsp;000&nbsp;zł</b></div><div class="lb">Nowy Etap (para)<b>kilka tysięcy zł</b></div><div class="col r"><i></i></div><div class="col g"><i></i></div></div><ul class="cpts"><li><b>Zwykle kilka tysięcy złotych</b> za cały proces. Możliwe <b>10 rat 0%</b>.</li><li><b>Porównujemy koszt dla pary.</b> Tradycyjnie każde z Was płaci swojemu prawnikowi średnio ok. 30 000 zł, razem ok. 60 000 zł. U nas jest jedna kwota dla Was obojga.</li><li><b>Koszt możecie podzielić.</b> Jeśli zechcesz, w trakcie mediacji staramy się rozłożyć go na Ciebie i małżonka.</li><li><b>Cena z góry, która się nie zmienia.</b> Podajemy całkowity koszt rozwodu, dlatego potrzebna jest krótka rozmowa: zbieramy dane, dzięki którym dostajesz konkretną kwotę, niezależną od liczby rozpraw.</li></ul><p class="note" style="color:var(--on-dark-muted);margin-top:10px">Średnia z wycen kancelarii zebranych inkognito w 2026 r.: konsultacja, honorarium, 3 rozprawy, pisma, II instancja, koszty dodatkowe. Rozpiętość 15–50 tys. zł na osobę.<span class="src">źródło: youtube.com/[adres odcinka o cenach]</span></p>']},
  {id:'e-method',type:'r',render:a=>['Dlatego odwracamy kolejność.','<p style="margin-top:0">Pozew nie zaczyna rozwodu. Pozew go kończy. To Metoda Odwróconych Etapów:</p><div class="mth-w"><button type="button" class="replay" id="replay">↻ Odtwórz ponownie</button><svg class="mth" viewBox="0 -10 340 152" role="img" aria-label="Tradycyjnie: pozew, sąd, ustalenia, rozprawy. U nas przed pozwem są plan i ustalenia, a potem jedna rozprawa."><path class="m-l1" d="M0 40H180" fill="none" stroke="#d6a54c" stroke-width="4"/><path class="m-l2" d="M180 40H340" fill="none" stroke="#d6a54c" stroke-width="4"/><path class="m-stairs" d="M180 40V85H75V130H0" fill="none" stroke="#d6a54c" stroke-width="4" stroke-linejoin="round"/><g class="m-t m-arrows" fill="#d6a54c" font-size="13" font-weight="800" text-anchor="middle"><text x="82" y="31">→</text><text x="142" y="31">→</text><text x="240" y="31">→</text></g><g fill="#fff" font-weight="800" font-size="12.5" letter-spacing="1" text-anchor="middle"><g class="m-t m-pozew"><rect class="m-box" x="12" y="15" width="66" height="21" rx="5" fill="rgba(0,0,0,.32)" stroke="rgba(255,255,255,.1)"/><text x="45" y="30">POZEW</text></g><text class="m-t m-sad" x="112" y="30">SĄD</text><text class="m-t m-ust" x="190" y="30">USTALENIA</text><g class="m-new m-ust2"><rect x="80" y="60" width="96" height="21" rx="5" fill="rgba(0,0,0,.32)" stroke="rgba(255,255,255,.1)"/><text x="128" y="75">USTALENIA</text></g><g class="m-new m-plan"><rect x="10" y="105" width="56" height="21" rx="5" fill="rgba(0,0,0,.32)" stroke="rgba(255,255,255,.1)"/><text x="38" y="120">PLAN</text></g></g><text class="m-t m-roz" x="258" y="30" textLength="72" fill="#fff" font-weight="800" font-size="12.5">ROZPRAWY</text><path class="m-strike" d="M317 36L333 17" fill="none" stroke="#f0d9a8" stroke-width="2.6" stroke-linecap="round"/><g class="m-hand" transform="rotate(-5 333 80)" fill="#f0d9a8" font-size="30" text-anchor="end"><text x="333" y="68">jedna</text><text x="333" y="94">rozprawa</text></g><g transform="rotate(-5 333 80)"><path class="m-u1" d="M319 101H335" fill="none" stroke="#f0d9a8" stroke-width="2.2" stroke-linecap="round"/><path class="m-u2" d="M320 106H334" fill="none" stroke="#f0d9a8" stroke-width="2.2" stroke-linecap="round"/></g><g class="m-new m-nums" fill="#d6a54c" font-weight="800" font-size="11" text-anchor="middle"><text x="38" y="101">1</text><text x="128" y="56">2</text><text x="208" y="11">3</text></g></svg></div><p class="m-after m-sep"><b style="color:#fff">Dzięki temu rozwód najczęściej:</b></p><div class="info2 m-after"><div><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="5"/><circle class="ring" cx="32" cy="32" r="27" fill="none" stroke="#d6a54c" stroke-width="5" stroke-linecap="round" transform="rotate(-90 32 32)"/><text x="32" y="41" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">1</text></svg><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#d6a54c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9.5" y="4.5" width="9" height="5" rx="1" transform="rotate(45 14 7)"/><path d="M11.6 9.4L4 17M12.5 20.5H21M14.5 17.5h4.5"/></svg><b>Rozwód na pierwszej rozprawie</b></div><div><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="5"/><circle class="ring r2" cx="32" cy="32" r="27" fill="none" stroke="#d6a54c" stroke-width="5" stroke-linecap="round" transform="rotate(-90 32 32)"/><text x="32" y="37" text-anchor="middle" fill="#fff" font-size="17" font-weight="800">60</text><text x="32" y="48" text-anchor="middle" fill="#fff" font-size="8" font-weight="700">MIN</text></svg><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#d6a54c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9.5 2.5h5M12 2.5V5"/></svg><b>Sprawa trwa maksymalnie 60 minut</b></div></div>']},
- {id:'lead',type:'email'},
+ {id:'lead',type:'email',if:()=>VAR!=='d'},
+ {id:'dname',type:'dname',if:()=>VAR==='d'},
+ {id:'slotd',type:'slot',if:()=>VAR==='d'},
  {id:'slot',type:'slot',if:()=>VAR==='b'},
  {id:'phone',type:'phone'},
  {id:'slotc',type:'slot',if:()=>VAR==='c'},
@@ -896,15 +901,17 @@ const S=[
 let A={}, idx=0;
 try{const s=JSON.parse(localStorage.getItem('ne-quiz5')||'null'); if(s&&s.A){A=s.A; idx=s.idx||0;}}catch(e){}
 const save=()=>{try{localStorage.setItem('ne-quiz5',JSON.stringify({A,idx}))}catch(e){}};
-let VAR='c'; try{ const pv=new URLSearchParams(location.search).get('v'); VAR=['a','b','c'].includes(pv)?pv:(localStorage.getItem('ne-var3')||'c'); }catch(e){}
+let VAR='d'; try{ const pv=new URLSearchParams(location.search).get('v'); VAR=['a','b','c','d'].includes(pv)?pv:(localStorage.getItem('ne-var4')||'d'); }catch(e){}
 const SL=[['17:00','17:30','18:30','19:00'],['9:00','10:30','12:00','14:00','16:30','18:00','19:00','19:30']];
+const DSL=[['08:05','09:05','09:20','10:35','12:05','14:20','16:35','18:05'],['09:20','10:05','11:35','13:20','15:05','17:20'],['09:20','10:50','12:35','14:05','16:20','18:35']];
+function dDays(){ const out=[]; const t=new Date(); t.setHours(0,0,0,0); let k=1; while(out.length<3){ const x=new Date(t.getTime()+k*864e5); if(x.getDay()!==0){ const nm=k===1?'Jutro':['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][x.getDay()]; out.push([nm+', '+x.getDate()+'.'+String(x.getMonth()+1).padStart(2,'0'), (k===1?'jutro':nm+' '+x.getDate()+'.'+String(x.getMonth()+1).padStart(2,'0'))]); } k++; } return out; }
 function challenge(){ if(A.contact==='hard'||A.contact==='none') return 'jak ustalić cokolwiek z drugą stroną, skoro kontakt jest trudny';
   if(A.partner&&A.partner!=='yes') return 'czy druga strona zgodzi się na rozwód bez walki';
   if(A.fault==='yes'||A.fault==='them') return 'czy da się uniknąć sporu o winę';
   if(A.home&&A.home!=='no') return 'jak podzielić mieszkanie'+(A.home==='credit'?' i kredyt':'');
   if(A.kids==='yes') return 'jak ustalić opiekę i alimenty bez sporu';
   return 'ile dokładnie zapłacisz i jak szybko to się skończy'; }
-function slotLabel(){ if(!A.gslot||A.gskip) return null; const dd=days(); const i=A.gday||0; return (i===0?'dziś':((dd[1]-dd[0])===864e5?'jutro':DN[dd[1].getDay()]))+', '+A.gslot; }
+function slotLabel(){ if(!A.gslot||A.gskip) return null; if(VAR==='d') return A.glabel||null; const dd=days(); const i=A.gday||0; return (i===0?'dziś':((dd[1]-dd[0])===864e5?'jutro':DN[dd[1].getDay()]))+', '+A.gslot; }
 const vis=()=>S.filter(q=>!q.if||q.if(A));
 const QS=()=>vis().filter(q=>(!q.type||q.type==='loc')&&!q.nc);
 const okEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v||'');
@@ -966,7 +973,7 @@ function renderQuiz(){
   const qs=QS(), qn=qs.indexOf(q)+1;
   $('#bar').style.width=Math.round((idx)/(v.length)*100)+'%';
   const done=renderPlan();
-  const card=$('#qcard'); const gateT=['email','slot','phone','code'].includes(q.type); const an=dir; dir=''; const inGate=gateT&&!!$('#qcard .gate-card');
+  const card=$('#qcard'); const gateT=['email','dname','slot','phone','code'].includes(q.type); const an=dir; dir=''; const inGate=gateT&&!!$('#qcard .gate-card');
   card.className='qcard'+(inGate?'':an==='f'?' in-r':an==='b'?' in-l':an==='z'?' fade':''); void card.offsetWidth;
   const ganim=inGate?(an==='f'?' in-r':an==='b'?' in-l':''):'';
   const mplan=`<div class="mplan">Twój plan: ${done}/5 <i><em style="width:${done*20}%"></em></i></div>`;
@@ -992,7 +999,7 @@ function renderQuiz(){
       <p class="note" style="margin-top:8px">Zapamiętaj go albo zapisz. Możesz też wpisać własne 4 cyfry.</p>
       <ul class="dlist"><li>Dzwonimy tylko o porze, którą wskażesz.</li><li>SMS-y przychodzą od nadawcy „K Jura” i nie zawierają słowa „rozwód”.</li><li>Linki do planu i wideo działają tylko z Twoim PIN-em.</li></ul>
       <div class="qnav"><button class="btn btn-gold" id="next" type="button">Dalej →</button><button class="linkbtn" id="back" type="button">Wstecz</button></div>`;
-  } else if(q.type==='email'||q.type==='slot'||q.type==='phone'||q.type==='code'){
+  } else if(['email','dname','slot','phone','code'].includes(q.type)){
     const c=court(), p=path(), P=personal(A), st=q.type==='email'?1:2;
     const prev=`<div class="preview" aria-hidden="true"><div class="inner">
         <div class="vis"><span>Ścieżka</span><b>${esc(p.name)}</b></div>
@@ -1005,12 +1012,27 @@ function renderQuiz(){
       </div><div class="veil">🔒 ${st===1?'Jeszcze dwa krótkie kroki':'Ostatni krok'}</div></div>`;
     const steps=gsteps(st);
     const VC=VAR==='c'; const GN=3, sl=VAR!=='a'?slotLabel():null;
-    const stepno=VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
+    const VD=VAR==='d'; const stepno=VD?({dname:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
     const dec=A.stage==='decided'||A.stage==='talked';
-    if(q.type==='slot'&&A.gslot===undefined){ A.gday=0; A.gslot=SL[0][0]; A.gskip=false; save(); }
+    if(q.type==='slot'&&A.gslot===undefined&&VAR!=='d'){ A.gday=0; A.gslot=SL[0][0]; A.gskip=false; save(); }
     const dd2=days();
     const dots=`<div class="gdots" aria-label="Krok ${stepno} z ${GN}">${Array.from({length:GN},(_,i)=>`<i class="${i+1<=stepno?'on':''}"></i>`).join('')}<span>Krok ${stepno} z ${GN}</span><button class="${q.type==='code'?'gbk pill':'gbk linkbtn'}" id="back" type="button">${q.type==='code'?'Zmień numer':'← Wstecz'}</button></div>`;
-    const inner=q.type==='email'?`${dots}<h2>Odbierz i zobacz swój Plan Rozwodu</h2>
+    const inner=q.type==='dname'?`${dots}<h2>Twój Plan Rozwodu jest gotowy. Jak masz na imię?</h2>
+        <div style="display:grid;gap:12px;margin-top:14px"><label class="f">Imię<input type="text" id="nm" name="given-name" autocomplete="given-name" autocapitalize="words" placeholder="Jak mamy się zwracać?" value="${esc(A.name||'')}"></label></div>
+        <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Dalej →</button>
+        <div class="trustrow"><span>4,8/5 w Google · ponad 1000 opinii</span><span>Odpowiedzi są poufne</span></div>`
+      :(VD&&q.type==='slot')?`${dots}<h2 style="font-size:1.3rem">${A.name?esc(A.name)+', p':'P'}odczas krótkiej rozmowy przekażemy Ci Twój Plan Rozwodu.</h2>
+        <div class="bk-sub"><b>Dowiesz się m.in.:</b><ol class="bk3"><li><span>Czy Twój rozwód zakończy się <b>bezkonfliktowo, na jednej rozprawie</b>${A.kids==='yes'?', <b>bez angażowania dzieci</b>':''}?</span></li><li><span>Co może dziś <b>niepotrzebnie pogorszyć Twoją sytuację</b>${A.together==='yes'?', kiedy mieszkacie jeszcze razem':A.together==='no'?', kiedy nie mieszkacie już razem':''}?</span></li><li><span>Jaki jest <b>największy błąd</b>, którego trzeba uniknąć <b>przed złożeniem pozwu</b>?</span></li></ol></div>
+        <p class="bk-q" style="color:var(--ink);font-size:.95rem">Wybierz godzinę rozmowy (5–10 min):</p>
+        ${(()=>{ const dl=dDays(); const di=Math.min(A.dday||0,dl.length-1); return `<div class="grow"><select id="d-day" aria-label="Dzień rozmowy">${dl.map((x,i)=>`<option value="${i}" ${di===i?'selected':''}>${x[0]}</option>`).join('')}</select><div class="slots gsl">${DSL[di].map(x=>`<button type="button" data-dslot="${x}">${x}</button>`).join('')}</div></div>`; })()}
+        <p class="note" style="margin-top:10px">Po wybraniu godziny poprosimy o numer telefonu.</p>`
+      :(VD&&q.type==='phone')?`${dots}<h2 style="font-size:1.3rem">${A.name?esc(A.name)+', p':'P'}odaj numer telefonu…</h2>
+        <p class="dchips"><span>📅 ${esc((A.glabel||'').split(', ')[0])}</span><span>🕘 ${esc((A.glabel||'').split(', ')[1]||'')} (rozmowa ok. 10 min)</span></p>
+        <div style="display:grid;gap:12px;margin-top:12px"><label class="f">Telefon<div class="telgrp">${ccSel()}<input type="tel" id="ph" name="tel" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div></label>
+          <label class="consent" id="csw"><input type="checkbox" id="cs2" ${A.consent?'checked':''}><span>Zgadzam się na kontakt telefoniczny i SMS przez Pravna Group sp. z o. o. w celu przedstawienia informacji, oferty i materiałów dotyczących usługi. Szczegóły w <a href="https://nowy-etap.pl/regulaminy" target="_blank" rel="noopener">Polityce Prywatności</a>.</span></label></div>
+        <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Zapisz moje preferencje →</button>
+        <p style="margin:8px 0 0;text-align:center"><button class="linkbtn" id="dback" type="button">zmień termin</button></p>`
+      :q.type==='email'?`${dots}<h2>Odbierz i zobacz swój Plan Rozwodu</h2>
         <div style="display:grid;gap:12px;margin-top:14px">
           <label class="f">Imię<input type="text" id="nm" name="given-name" autocomplete="given-name" autocapitalize="words" placeholder="Jak mamy się zwracać?" value="${esc(A.name||'')}"></label>
           <label class="f">E-mail<input type="email" id="em" name="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="twoj@email.pl" value="${esc(A.email||'')}"><small class="hint">Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.</small></label>
@@ -1020,7 +1042,6 @@ function renderQuiz(){
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Dalej →</button>
         <div class="trustrow"><span>Bez spamu, wypiszesz się jednym kliknięciem</span><span>4,8/5 w Google · ponad 1000 opinii</span><span>Odpowiedzi są poufne</span></div>`
       :(VC&&q.type==='phone')?`${dots}<h2>${A.name?esc(A.name)+', g':'G'}dzie wysłać Twój Plan Rozwodu?</h2>
-        <div class="seg chan" role="radiogroup" aria-label="Jak wysłać plan" style="margin-top:12px">${[['sms','SMS'],['wa','WhatsApp']].map(o=>`<button type="button" data-chan="${o[0]}" class="${(A.chan||'sms')===o[0]?'on':''}" role="radio" aria-checked="${(A.chan||'sms')===o[0]}">${o[1]}</button>`).join('')}</div>
         <div style="display:grid;gap:12px;margin-top:12px"><label class="f">Telefon<div class="telgrp">${ccSel()}<input type="tel" id="ph" name="tel" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div></label>
           <div class="smsprev"><span>Otrzymasz${(A.chan||'sms')==='wa'?' na WhatsAppie':' SMS-em'}:</span><div class="bub"><b>K Jura</b>${A.name?esc(A.name)+', T':'T'}woj plan jest gotowy. Wrocisz do niego tutaj: lp.nowy-etap.pl/l/x5k-1</div></div></div>
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Wyślij i przejdź dalej →</button>
@@ -1093,7 +1114,7 @@ function renderQuiz(){
       <div class="qnav">${q.multi?'<button class="btn btn-gold" id="next" type="button">Dalej →</button>':''}<button class="linkbtn" id="back" type="button">Wstecz</button></div>`;
   }
   card.innerHTML=h; gateDim();
-  $('#hplan').innerHTML=['email','slot','phone','code','call'].includes(q.type)?'':`Twój plan ${done}/5<i><em style="width:${done*20}%"></em></i>`;
+  $('#hplan').innerHTML=['email','dname','slot','phone','code','call'].includes(q.type)?'':`Twój plan ${done}/5<i><em style="width:${done*20}%"></em></i>`;
   // zdarzenia
   $$('#qcard .qopt[data-v]').forEach(b=>b.onclick=()=>{
     const val=b.dataset.v;
@@ -1112,6 +1133,11 @@ function renderQuiz(){
   const city=$('#city'); if(city){ city.onchange=e=>{ const v=e.target.value; A.city=v; A.abroad=A.abroad==='one'?'one':(v?'pl':null); if(v&&!A.still) A.still='yes'; save(); renderQuiz(); };
     $$('#qcard [data-still]').forEach(b=>b.onclick=()=>{ A.still=b.dataset.still; save(); renderQuiz(); });
     const oa=$('#oneab'); if(oa) oa.onchange=()=>{ A.abroad=oa.checked?'one':'pl'; save(); }; }
+  const ddy=$('#d-day'); if(ddy){ ddy.onchange=()=>{ A.dday=+ddy.value; save(); renderQuiz(); };
+    $$('#qcard [data-dslot]').forEach(b=>b.onclick=()=>{ const dl=dDays(); A.gslot=b.dataset.dslot; A.gskip=false; A.glabel=dl[Math.min(A.dday||0,dl.length-1)][1]+', '+A.gslot; save(); b.classList.add('on'); setTimeout(next,170); }); }
+  const nmd=$('#nm'); if(nmd&&!$('#em')) nmd.oninput=e=>{ A.name=e.target.value.trim(); save(); upd(); };
+  const cs2=$('#cs2'); if(cs2) cs2.onchange=e=>{ A.consent=e.target.checked; save(); upd(); };
+  const dbk=$('#dback'); if(dbk) dbk.onclick=()=>$('#back').click();
   $$('#qcard [data-chan]').forEach(b=>b.onclick=()=>{ A.chan=b.dataset.chan; save(); renderQuiz(); });
   const np=$('#nophone'); if(np) np.onclick=()=>{ A.phone=''; A.cskip=true; save(); next(); };
   const ph=$('#ph'); if(ph){ const pv=()=>{ const el=$('#ph-prev'); if(el) el.textContent=phoneOk(A.phone)?(slotLabel()?'Zadzwonimy na ':'Numer: ')+fmtPh():''; }; ph.oninput=e=>{A.phone=e.target.value; A.noPhone=false; save(); upd(); pv();}; pv(); }
@@ -1126,7 +1152,7 @@ function renderQuiz(){
     $('#noslot').onclick=e=>{ A.gslot=null; A.gskip=true; A.gsms=e.currentTarget.dataset.sms==='1'; save(); next(); }; }
   const nx=$('#next'); if(nx) nx.onclick=next;
   if(nx&&q.type==='call') nx.onclick=()=>{ booked=A.ctime==='15'?null:`${A.cday===0?'dziś':'jutro'}, ${A.ctime}`; A.call=A.ctime==='15'?'now':'later'; A.done=true; save(); location.hash='wynik'; };
-  function upd(){ if(!nx) return; if(q.type==='phone') nx.disabled=!phoneOk(A.phone); else if(q.type==='slot') nx.disabled=!A.gslot; else if(q.type==='code') nx.disabled=!/^\d{4}$/.test(A.otp||''); else if(q.type==='pin') nx.disabled=!/^\d{4}$/.test(A.pin||''); else if(q.type==='call') nx.disabled=!A.ctime; else if(q.type==='email') nx.disabled=!(okEmail(A.email)&&A.consent&&(A.name||'').trim().length>=2); else if(q.type==='loc') nx.disabled=!(A.abroad==='both'||(A.abroad&&A.city&&A.still)); else if(q.multi) nx.disabled=!(A[q.id]||[]).length; }
+  function upd(){ if(!nx) return; if(q.type==='phone') nx.disabled=!(phoneOk(A.phone)&&(VAR!=='d'||A.consent)); else if(q.type==='dname') nx.disabled=(A.name||'').trim().length<2; else if(q.type==='slot') nx.disabled=!A.gslot; else if(q.type==='code') nx.disabled=!/^\d{4}$/.test(A.otp||''); else if(q.type==='pin') nx.disabled=!/^\d{4}$/.test(A.pin||''); else if(q.type==='call') nx.disabled=!A.ctime; else if(q.type==='email') nx.disabled=!(okEmail(A.email)&&A.consent&&(A.name||'').trim().length>=2); else if(q.type==='loc') nx.disabled=!(A.abroad==='both'||(A.abroad&&A.city&&A.still)); else if(q.multi) nx.disabled=!(A[q.id]||[]).length; }
   upd();
   if(q.id==='contact'&&A.contact==='unsafe'){ const n=document.createElement('button'); n.className='btn btn-gold'; n.type='button'; n.textContent='Dalej →'; n.onclick=next; $('#qcard .qnav').prepend(n); }
 }
@@ -1142,7 +1168,7 @@ function animOut(d,fn){ const el=$('#qcard .gate-card')||$('#qcard'); if(!el||ma
 function next(){ if(busy) return; const v=vis();
   if(idx<v.length-1){ busy=true; const nt=v[idx+1].type, ct=v[idx].type;
     animOut('f',()=>{
-      if(nt==='email'&&ct!=='email'){ const c=$('#qcard'); c.className='qcard fade'; c.innerHTML='<div class="prep"><i class="spin"></i><b>Przygotowuję Twój Plan Rozwodu…</b></div>'; $('#bar').style.width='100%'; window.scrollTo(0,0);
+      if(['email','dname'].includes(nt)&&!['email','dname'].includes(ct)){ const c=$('#qcard'); c.className='qcard fade'; c.innerHTML='<div class="prep"><i class="spin"></i><b>Przygotowuję Twój Plan Rozwodu…</b></div>'; $('#bar').style.width='100%'; window.scrollTo(0,0);
         setTimeout(()=>{ busy=false; idx++; dir='z'; save(); renderQuiz(); window.scrollTo(0,0); },900); }
       else { busy=false; idx++; dir='f'; save(); renderQuiz(); window.scrollTo(0,0); } }); }
   else { A.done=true; save(); location.hash='wynik'; } }
@@ -1228,7 +1254,7 @@ function renderResult(){
       <p class="note" style="margin-top:4px;font-weight:700">Rozmowa niczego nie uruchamia.</p>
     </div>
   </div>
-  <div class="a-sales"><div class="sales"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: ${VAR!=='a'?(VAR==='c'?'C, numer przed terminem · kanał: '+((A.chan||'sms')==='wa'?'WhatsApp':'SMS')+(A.gsms?' · prosi o propozycję terminu SMS-em':''):'B, termin przed planem')+(A.gskip?' (krok z terminem pominięty)':''):'A, plan od razu'}.<br>Scoring: <b class="${hot==='Gorący'?'hot':''}">${sc} pkt · ${hot}</b><br>Segment: ${(()=>{ const dec=a.stage==='decided'||a.stage==='talked', cons=a.stage==='considering', tg=a.together==='yes', ap=a.together==='no'; if(!(dec||cons)||!(tg||ap)) return 'poza tabelą (sprawa w sądzie albo brak odpowiedzi)'; const k=(ap?'osobno':'razem')+', '+(dec?'zdecydowani':'rozważa'); const r={'osobno, zdecydowani':'6,4%','osobno, rozważa':'2,8%','razem, zdecydowani':'3,9%','razem, rozważa':'1,5%'}[k]; return k+' · umowa z '+r+' leadów z telefonem (dane historyczne)'; })()}.<br>Kąt rozmowy: ${a.kids==='yes'?'dobro dzieci i porozumienie rodzicielskie':'szybkość i koszt'}${a.home&&a.home!=='no'?'; dosprzedaż: podział majątku'+(a.home==='credit'?' i kredyt':''):''}${a.partner!=='yes'?'; obiekcja: druga strona (mediator zaprasza)':''}.<br>Priorytety klienta: ${(a.pri||[]).map(x=>(PRI.find(p=>p[0]===x)||['',x])[1]).join(', ')||'brak'}.<br>Rozmowa: ${a.noPhone?'brak numeru':(booked?'20 min z opiekunem, '+booked:'bez terminu, wysłać SMS z prośbą o porę')}. Filmy: ${esc(a.mtime||'9:30')}, ${a.smsOff?'tylko e-mail':'e-mail i SMS'}. Mieszkają razem: ${a.together==='yes'?'tak, dzwonić tylko o wybranej porze':a.together==='no'?'nie':'brak odpowiedzi'}. Telefon: ${a.phone?'podany':'brak (tylko e-mail, do nurturingu)'}${booked?' · rozmowa: '+booked:''}.</div></div>`;
+  <div class="a-sales"><div class="sales"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: ${VAR!=='a'?(VAR==='d'?'D, nowy quiz z końcówką V3 (imię, termin, numer; rozmowa 5–10 min)':VAR==='c'?'C, numer przed terminem · kanał: '+((A.chan||'sms')==='wa'?'WhatsApp':'SMS')+(A.gsms?' · prosi o propozycję terminu SMS-em':''):'B, termin przed planem')+(A.gskip?' (krok z terminem pominięty)':''):'A, plan od razu'}.<br>Scoring: <b class="${hot==='Gorący'?'hot':''}">${sc} pkt · ${hot}</b><br>Segment: ${(()=>{ const dec=a.stage==='decided'||a.stage==='talked', cons=a.stage==='considering', tg=a.together==='yes', ap=a.together==='no'; if(!(dec||cons)||!(tg||ap)) return 'poza tabelą (sprawa w sądzie albo brak odpowiedzi)'; const k=(ap?'osobno':'razem')+', '+(dec?'zdecydowani':'rozważa'); const r={'osobno, zdecydowani':'6,4%','osobno, rozważa':'2,8%','razem, zdecydowani':'3,9%','razem, rozważa':'1,5%'}[k]; return k+' · umowa z '+r+' leadów z telefonem (dane historyczne)'; })()}.<br>Kąt rozmowy: ${a.kids==='yes'?'dobro dzieci i porozumienie rodzicielskie':'szybkość i koszt'}${a.home&&a.home!=='no'?'; dosprzedaż: podział majątku'+(a.home==='credit'?' i kredyt':''):''}${a.partner!=='yes'?'; obiekcja: druga strona (mediator zaprasza)':''}.<br>Priorytety klienta: ${(a.pri||[]).map(x=>(PRI.find(p=>p[0]===x)||['',x])[1]).join(', ')||'brak'}.<br>Rozmowa: ${a.noPhone?'brak numeru':(booked?'20 min z opiekunem, '+booked:'bez terminu, wysłać SMS z prośbą o porę')}. Filmy: ${esc(a.mtime||'9:30')}, ${a.smsOff?'tylko e-mail':'e-mail i SMS'}. Mieszkają razem: ${a.together==='yes'?'tak, dzwonić tylko o wybranej porze':a.together==='no'?'nie':'brak odpowiedzi'}. Telefon: ${a.phone?'podany':'brak (tylko e-mail, do nurturingu)'}${booked?' · rozmowa: '+booked:''}.</div></div>`;
   const bd=$('#bk-day'); if(bd) bd.onchange=()=>{ pick.day=+bd.value; pick.slot=null; renderResult(); };
   const lt=$('details.later'); if(lt) lt.addEventListener('toggle',()=>{pick.open=lt.open;});
   $$('[data-slot]').forEach(b=>b.onclick=()=>{ pick.slot=b.dataset.slot; $$('[data-slot]').forEach(x=>x.classList.toggle('on',x===b)); $('#bk').disabled=false; });
@@ -1277,7 +1303,7 @@ function route(){
 function fabClose(){ $('#fab-menu').hidden=true; $('#fab-btn').setAttribute('aria-expanded','false'); }
 $('#fab-btn').onclick=()=>{ const m=$('#fab-menu'); m.hidden=!m.hidden; $('#fab-btn').setAttribute('aria-expanded',String(!m.hidden)); };
 document.addEventListener('click',e=>{ if(!e.target.closest('#fab')) fabClose(); });
-$$('.fab-menu a[data-var]').forEach(x=>{ x.classList.toggle('on',x.dataset.var===VAR); x.onclick=()=>{ VAR=x.dataset.var; try{localStorage.setItem('ne-var3',VAR)}catch(e){} A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); $$('.fab-menu a[data-var]').forEach(y=>y.classList.toggle('on',y.dataset.var===VAR)); setTimeout(route,0); }; });
+$$('.fab-menu a[data-var]').forEach(x=>{ x.classList.toggle('on',x.dataset.var===VAR); x.onclick=()=>{ VAR=x.dataset.var; try{localStorage.setItem('ne-var4',VAR)}catch(e){} A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); $$('.fab-menu a[data-var]').forEach(y=>y.classList.toggle('on',y.dataset.var===VAR)); setTimeout(route,0); }; });
 $('#reset').onclick=()=>{ A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); setTimeout(route,0); };
 addEventListener('hashchange',route);
 route();
