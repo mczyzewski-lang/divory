@@ -64,7 +64,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (min-width:760px){.q1 .opts.n3{grid-template-columns:repeat(3,1fr)}}
 .q1 .opt{background:linear-gradient(180deg,#e2b65f,#c8963b);color:#2b1e05;border:0;border-radius:10px;padding:16px 16px;text-align:left;font-weight:800;font-size:1rem;display:flex;align-items:center;gap:10px;box-shadow:0 10px 20px -10px rgba(120,80,10,.7);transition:transform .12s,filter .12s}
 .q1 .opt::after{content:"→";margin-left:auto;color:#2b1e05}
-.q1 .opt:hover{transform:translateY(-2px);filter:brightness(1.06)}
+@media (hover:hover){.q1 .opt:hover{transform:translateY(-2px);filter:brightness(1.06)}}
 .q1 .meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:.8rem;color:var(--on-dark-muted)}
 .side{display:flex;flex-direction:column;gap:14px;align-items:flex-end}
 .kv2{position:relative;margin:0;width:min(340px,100%);border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
@@ -177,7 +177,8 @@ footer.ft{padding-block:28px 90px;font-size:.8rem;color:var(--muted)}
 .qcard .sub{color:var(--muted);margin-top:8px}
 .qopts{display:grid;gap:10px;margin-top:20px}
 .qopt{display:flex;align-items:center;gap:14px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:15px 16px;font-size:1rem;font-weight:600;color:var(--ink)}
-.qopt:hover{border-color:var(--gold)}
+@media (hover:hover){.qopt:hover{border-color:var(--gold)}}
+.qopt{-webkit-tap-highlight-color:transparent}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
 .seg button{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px;font-weight:700;font-size:1rem;color:var(--ink)}
 .seg button.on{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-ink)}
@@ -462,7 +463,7 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .dcol{display:flex;flex-direction:column;gap:6px;text-align:center}
 .dh{padding:4px 0 6px}.dh b{display:block;font-size:.86rem}.dh small{color:var(--muted);font-size:.74rem}
 .dcol button{border:2px solid var(--gold);background:var(--surface);border-radius:999px;padding:7px 4px;font-weight:800;font-size:.9rem;color:var(--ink);box-shadow:0 4px 10px -6px rgba(120,80,10,.6)}
-.dcol button:hover{background:var(--gold-soft)}
+@media (hover:hover){.dcol button:hover{background:var(--gold-soft)}}
 .dcol s{display:block;padding:9px 4px;font-size:.9rem;color:var(--muted);opacity:.55}
 #dmore{display:block;margin:8px auto 0}
 .dhold{padding:22px 10px;text-align:center}.dhold b{font-size:1.05rem}.dhold .dchips{justify-content:center}.dhold .spin{display:block;margin:16px auto 0;width:26px;height:26px;border-width:3px}
@@ -1523,7 +1524,7 @@ function renderF(){
     :fs==='code'?`<div class="fm">${intro}</div>${knote}<div class="fu">${esc(fmtPh())}</div><div class="fm" id="f-last">Wysłałem kod SMS na numer <b style="white-space:nowrap">${esc(fmtPh())}</b>. Wpisz go, żeby zabezpieczyć rozmowę.<input type="text" id="f-otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="• • • •" style="margin-top:10px"><button class="btn btn-gold" id="f-unl" type="button" style="width:100%;margin-top:10px" disabled>Potwierdzam i odbieram plan</button><p class="note" style="margin-top:8px">Kod nie doszedł albo numer jest błędny? <button class="linkbtn" id="f-chg" type="button" style="padding:0">Zmień numer</button></p><p class="note" style="margin-top:2px">W prototypie zadziała dowolne 4 cyfry.</p></div>`
     :`<div class="fm" style="--i:0">${intro}<p style="margin-top:8px">Dyskrecję stawiam sobie jako priorytet. Dlatego dostęp do tego okna będziesz mieć tylko Ty, przez swój numer telefonu. <b>Wpisz go, żeby zabezpieczyć rozmowę.</b> Spokojnie, nikt nie zadzwoni bez Twojej zgody.</p><div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-gph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><button class="btn btn-gold" id="f-send" type="button" style="width:100%;margin-top:10px" disabled>Zabezpiecz rozmowę i odbierz plan</button><p class="note" style="margin-top:6px">Dostaniesz SMS z 4-cyfrowym kodem, od nadawcy „K Jura”, bez słowa „rozwód”.</p></div>${knote}`);
   const planCard=un?`<div class="fsec">🔒 Rozmowa zabezpieczona. Czat jest przypisany do numeru <b style="white-space:nowrap">${esc(fmtPh())}</b>.</div><div class="fm">Oto Twój wstępny Plan Rozwodu.<button class="fplan gray" id="f-open" type="button"><b>📄 Wstępny Plan Rozwodu – ${nm||'Twój plan'} (${dstr})</b><span>${FX.filter(x=>x[3]).map(x=>esc(x[3])).join(', ')}</span><span style="color:var(--ink)">W środku: 5 kroków po kolei, ${P.docs.length} dokumentów, właściwy sąd i koszty.</span><em>Otwórz plan →</em></button></div>`
-    :`<div class="fm" style="--i:1"><div class="fplan lk" aria-hidden="true"><b>🔒 Wstępny Plan Rozwodu</b><span>Ścieżka: <i class="blur">${esc(p.name)}</i></span><span>Właściwy sąd: <i class="blur">${esc(c)}</i></span><span>Kwestie do ustalenia: <i class="blur">${P.issues.map(esc).join(', ')}</i></span><span>Dokumenty: <i class="blur">${P.docs.length} pozycji</i></span><em>Pojawi się tutaj po zabezpieczeniu rozmowy</em></div></div>`;
+    :`<div class="fm" style="--i:1"><div class="fplan lk" aria-hidden="true"><b>🔒 Wstępny Plan Rozwodu</b><span>Ścieżka: <i class="blur">${esc(p.name)}</i></span><span>Właściwy sąd: <i class="blur">${esc(c)}</i></span><span>Kwestie do ustalenia: <i class="blur">${P.issues.map(esc).join(', ')}</i></span><span>Dokumenty: <i class="blur">${P.docs.length} pozycji</i></span><em>Link do planu pojawi się tutaj po zabezpieczeniu rozmowy</em></div></div>`;
   const proof=`<div class="fproof${late}" style="--j:3"><b>★ 4,8/5 w Google</b> · ponad 1000 opinii<q>Znałam ceny w Warszawie i byłam przerażona. Od Was usłyszałam kwotę dużo, dużo mniejszą. Była podana od razu na początku i się nie zmieniła.</q><small>Wioletta, Warszawa · to wypowiedź klientki</small></div>`;
   const matMsgs=VG?`<div class="fm${late}" style="--j:1">Dzień dobry${nm?', '+nm:''}. Specjalizuję się w rozwodach <b>${spec}</b>. Zostały <b>ostatnie elementy Planu</b>. Przejdziemy przez nie w 15 minut:<ul>${HK.slice(0,3).map(u=>`<li>${esc(u)}</li>`).join('')}</ul></div>
         <div class="fm${late}" style="--j:2"><b>Rozmowa do niczego nie zobowiązuje</b>, a pełny plan dostaniesz niezależnie od decyzji. Wybierz termin:</div>
