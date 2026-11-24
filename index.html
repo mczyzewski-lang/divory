@@ -342,16 +342,25 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 @keyframes fswap{from{opacity:0;transform:translateY(-8px) scale(.97)}}
 .fdrop{margin-top:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;display:grid;gap:4px;box-shadow:0 18px 30px -18px rgba(0,0,0,.45);transform-origin:top;animation:fdrop .3s ease-out both}
 @keyframes fdrop{from{opacity:0;transform:scaleY(.4)}}
-.fdl{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:2px 6px}
-.fo{display:flex;gap:10px;align-items:center;padding:7px 8px;border-radius:10px;border:1.5px solid transparent;animation:fhl .45s calc(var(--k)*.45s + .45s) both}
+.fdl{position:relative;display:block;height:22px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:2px 6px}
+.fdl span{position:absolute;left:6px;top:2px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.fdl .spin{width:14px;height:14px;border-width:2px}
+.fdl .l1{animation:mout .25s 2.05s forwards}
+.fdl .l2{opacity:0;color:var(--ok);animation:stfade .25s 2.2s forwards}
+.fo{display:flex;gap:10px;align-items:center;padding:7px 8px;border-radius:10px;border:1.5px solid transparent}
 .fo .av{width:36px;height:36px;border-radius:50%;background:var(--sunk);display:grid;place-items:center}
 .fo img{width:36px;height:36px;border-radius:50%;object-fit:cover}
 .fo b{display:block;font-size:.9rem}.fo span{font-size:.76rem;color:var(--muted)}
-.fo em{margin-left:auto;font-style:normal;font-weight:800;color:var(--ok);opacity:0;animation:stfade .2s 1.95s forwards}
-.fo.sel{animation:fhl .45s 1.35s both,fsel .3s 1.9s forwards}
-@keyframes fhl{0%,100%{background:transparent}40%{background:var(--gold-soft)}}
-@keyframes fsel{to{background:var(--gold-soft);border-color:var(--gold)}}
-@media (prefers-reduced-motion:reduce){.fdrop,.fo,.fo.sel,.fper.swap{animation:none}.fo.sel{background:var(--gold-soft);border-color:var(--gold)}.fo em{opacity:1;animation:none}}
+.fo em{margin-left:auto;font-style:normal;font-weight:800;font-size:.72rem;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.fo.was{background:var(--gold-soft);border-color:var(--gold);animation:fwas .4s 1.15s forwards}
+.fo.was .b1{background:var(--gold);color:var(--gold-ink);animation:mout .3s 1.15s forwards}
+@keyframes fwas{to{background:transparent;border-color:transparent;opacity:.45;filter:grayscale(1)}}
+.fo:not(.was):not(.sel){animation:fhl .45s 1.45s both}
+.fo.sel{animation:fhl .45s 1.75s both,fsel .3s 2.15s forwards}
+.fo.sel .b2{background:var(--ok);color:#fff;opacity:0;animation:stfade .25s 2.2s forwards}
+@keyframes fhl{0%,100%{background:transparent}40%{background:var(--sunk)}}
+@keyframes fsel{to{background:var(--ok-soft);border-color:var(--ok)}}
+@media (prefers-reduced-motion:reduce){.fdrop,.fo,.fo.sel,.fo.was,.fper.swap,.fdl span,.fo em{animation:none!important}.fdl .l1{opacity:0}.fdl .l2,.fo.sel .b2{opacity:1}.fo.was{opacity:.45;background:transparent;border-color:transparent}.fo.was .b1{opacity:0}.fo.sel{background:var(--ok-soft);border-color:var(--ok)}}
 .fmsgs{display:flex;flex-direction:column;gap:10px;padding:16px;background:var(--bg)}
 .fm{align-self:flex-start;max-width:94%;background:var(--surface);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:12px 14px;font-size:.98rem;line-height:1.5}
 .fm ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
@@ -1457,7 +1466,7 @@ function renderF(){
         ${slots.replace('class="fm fslots"','class="fm fslots'+late+'"').replace('--i:4','--j:4')}`;
   const body=gateMsg+planCard+rest; pick.fjust=false;
   let h=`<div class="fwrap"><div class="fchat${an}">
-      <div class="fhead"><div class="fper${late?' swap':''}">${mat?`<img src="${IMG_M}" alt="" width="48" height="48"><div><b>Mateusz Malczewski</b><span>opiekun sprawy · ${a.kids==='yes'?'rozwody z dziećmi':'rozwody bez dzieci'}</span></div>`:`<img src="${IMG_K}" alt="" width="48" height="48"><div><b>Kamil Jura</b><span>prawnik i mediator, Nowy Etap</span></div>`}<i class="chev" aria-hidden="true">▾</i></div>${un&&!mat?`<div class="fdrop" aria-hidden="true"><span class="fdl">Opiekunowie spraw</span><div class="fo" style="--k:0"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody z orzekaniem o winie</span></div></div><div class="fo" style="--k:1"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody ${a.kids==='yes'?'małżeństw bez małoletnich dzieci':'małżeństw z dziećmi'}</span></div></div><div class="fo sel" style="--k:2"><img src="${IMG_M}" alt="" width="36" height="36"><div><b>Mateusz Malczewski</b><span>rozwody ${spec}</span></div><em>✓</em></div></div>`:''}</div>
+      <div class="fhead"><div class="fper${late?' swap':''}">${mat?`<img src="${IMG_M}" alt="" width="48" height="48"><div><b>Mateusz Malczewski</b><span>opiekun sprawy · ${a.kids==='yes'?'rozwody z dziećmi':'rozwody bez dzieci'}</span></div>`:`<img src="${IMG_K}" alt="" width="48" height="48"><div><b>Kamil Jura</b><span>prawnik i mediator, Nowy Etap</span></div>`}<i class="chev" aria-hidden="true">▾</i></div>${un&&!mat?`<div class="fdrop" aria-hidden="true"><span class="fdl"><span class="l1"><i class="spin"></i>Przypisuję opiekuna sprawy…</span><span class="l2">✓ Opiekun przypisany</span></span><div class="fo was"><img src="${IMG_K}" alt="" width="36" height="36"><div><b>Kamil Jura</b><span>prawnik i mediator</span></div><em class="b1">Aktywny</em></div><div class="fo" style="--k:1"><span class="av">👤</span><div><b>Opiekun sprawy</b><span>rozwody ${a.kids==='yes'?'bez małoletnich dzieci':'z dziećmi'}</span></div></div><div class="fo sel" style="--k:2"><img src="${IMG_M}" alt="" width="36" height="36"><div><b>Mateusz Malczewski</b><span>rozwody ${a.kids==='yes'?'z dziećmi':'bez dzieci'}</span></div><em class="b2">Przypisany ✓</em></div></div>`:''}</div>
       <div class="fmsgs">
         ${body}
       </div>
