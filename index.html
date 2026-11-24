@@ -309,6 +309,16 @@ footer.ft{padding-block:28px 90px;font-size:.8rem;color:var(--muted)}
 .smsprev span{display:block;font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:4px}
 .smsprev .bub{background:var(--sunk);border-radius:14px 14px 14px 4px;padding:9px 12px;font-size:.84rem;line-height:1.4;color:var(--ink);max-width:92%}
 .smsprev .bub b{display:block;font-size:.72rem;color:var(--muted);margin-bottom:2px}
+.bk3[hidden]{display:none}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tiers .t{border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;font-size:.84rem;color:var(--muted)}
+.tiers .t b{font-size:1rem;color:var(--ink)}
+.tiers .ok{background:var(--ok-soft)}.tiers .lk{background:var(--gold-soft);border:1.5px solid var(--gold)}
+.unk{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.unk li{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:3px}
+.unk li b::before{content:"? ";color:var(--gold-2)}
+.unk .blur{font-size:.9rem;color:var(--muted)}
+.book.nudge{animation:nudge .5s ease}
 .dgrid{margin-top:8px;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--surface)}
 .dcols{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:236px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent)}
 .dgrid.open .dcols{max-height:none;-webkit-mask-image:none;mask-image:none}.dgrid.open #dmore{display:none}
@@ -849,6 +859,7 @@ select.inl{display:inline-block;width:auto;padding:4px 8px;font-weight:700;borde
       <option>rozwód a mieszkanie i kredyt</option>
     </select>
     <span class="eyebrow">Wersja lejka</span>
+    <a href="#lp" data-var="e">E: numer opcjonalny, plan wstępny i pełny</a>
     <a href="#lp" data-var="d">D: nowy quiz z końcówką V3 (e-mail, kalendarz, numer)</a>
     <a href="#lp" data-var="c">C: e-mail, numer (plan SMS-em), potem termin</a>
     <a href="#lp" data-var="b">B: termin, potem numer do rozmowy</a>
@@ -917,7 +928,7 @@ const S=[
  {id:'lead',type:'email'},
  {id:'slotd',type:'slot',if:()=>VAR==='d'},
  {id:'slot',type:'slot',if:()=>VAR==='b'},
- {id:'phone',type:'phone'},
+ {id:'phone',type:'phone',if:()=>VAR!=='e'},
  {id:'slotc',type:'slot',if:()=>VAR==='c'},
  {id:'code',type:'code',if:()=>VAR==='a'}
 ];
@@ -926,12 +937,19 @@ const S=[
 let A={}, idx=0;
 try{const s=JSON.parse(localStorage.getItem('ne-quiz5')||'null'); if(s&&s.A){A=s.A; idx=s.idx||0;}}catch(e){}
 const save=()=>{try{localStorage.setItem('ne-quiz5',JSON.stringify({A,idx}))}catch(e){}};
-let VAR='d'; try{ const pv=new URLSearchParams(location.search).get('v'); VAR=['a','b','c','d'].includes(pv)?pv:(localStorage.getItem('ne-var4')||'d'); }catch(e){}
+let VAR='e'; try{ const pv=new URLSearchParams(location.search).get('v'); VAR=['a','b','c','d','e'].includes(pv)?pv:(localStorage.getItem('ne-var5')||'e'); }catch(e){}
 const SL=[['17:00','17:30','18:30','19:00'],['9:00','10:30','12:00','14:00','16:30','18:00','19:00','19:30']];
 const DG=[['17:05','17:20','17:35','18:05','18:20','18:50','19:05','19:20'],['08:05','!08:20','!08:35','!08:50','!09:05','09:20','10:35','!11:05','12:20','14:05','16:35'],['!08:05','!08:20','!08:35','!08:50','09:05','09:20','!10:05','11:35','13:20','15:05']];
 function dName(i,x){ const dd=days(); return i===0?'Dzisiaj':(i===1&&(dd[1]-dd[0])===864e5)?'Jutro':['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'][x.getDay()]; }
 const DSL=[['08:05','09:05','09:20','10:35','12:05','14:20','16:35','18:05'],['09:20','10:05','11:35','13:20','15:05','17:20'],['09:20','10:50','12:35','14:05','16:20','18:35']];
 function dDays(){ const out=[]; const t=new Date(); t.setHours(0,0,0,0); let k=1; while(out.length<3){ const x=new Date(t.getTime()+k*864e5); if(x.getDay()!==0){ const nm=k===1?'Jutro':['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][x.getDay()]; out.push([nm+', '+x.getDate()+'.'+String(x.getMonth()+1).padStart(2,'0'), (k===1?'jutro':nm+' '+x.getDate()+'.'+String(x.getMonth()+1).padStart(2,'0'))]); } k++; } return out; }
+function unknowns(a,c){ const u=[['Dokładna cena dla Waszej sprawy','jedna kwota dla Was obojga, z możliwością rat'],['Ile czeka się na rozprawę: '+c,'ok. kilka miesięcy od złożenia pozwu']];
+  if(a.partner&&a.partner!=='yes') u.push(['Czy druga strona zgodzi się na rozwód bez walki','ocena Waszej sytuacji i sposób zaproszenia']);
+  if(a.fault&&a.fault!=='no') u.push(['Czy da się uniknąć orzekania o winie','możliwe scenariusze i ich koszt']);
+  if(a.home&&a.home!=='no') u.push(['Jak podzielić mieszkanie'+(a.home==='credit'?' i kredyt':''),'warianty podziału i spłaty']);
+  if(a.kids==='yes') u.push(['Opieka, kontakty i wysokość alimentów','propozycja porozumienia rodzicielskiego']);
+  if(a.contact==='hard'||a.contact==='none') u.push(['Jak prowadzić ustalenia przy trudnym kontakcie','mediator rozmawia z każdym z Was osobno']);
+  return u; }
 function challenge(){ if(A.contact==='hard'||A.contact==='none') return 'jak ustalić cokolwiek z drugą stroną, skoro kontakt jest trudny';
   if(A.partner&&A.partner!=='yes') return 'czy druga strona zgodzi się na rozwód bez walki';
   if(A.fault==='yes'||A.fault==='them') return 'czy da się uniknąć sporu o winę';
@@ -1039,11 +1057,11 @@ function renderQuiz(){
       </div><div class="veil">🔒 ${st===1?'Jeszcze dwa krótkie kroki':'Ostatni krok'}</div></div>`;
     const steps=gsteps(st);
     const VC=VAR==='c'; const GN=3, sl=VAR!=='a'?slotLabel():null;
-    const VD=VAR==='d'; const stepno=VD?({email:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
+    const VD=VAR==='d'; const VE=VAR==='e'; const stepno=VE?3:VD?({email:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
     const dec=A.stage==='decided'||A.stage==='talked';
     if(q.type==='slot'&&A.gslot===undefined&&VAR!=='d'){ A.gday=0; A.gslot=SL[0][0]; A.gskip=false; save(); }
     const dd2=days();
-    const dots=`<div class="gdots" aria-label="Krok ${stepno} z ${GN}">${Array.from({length:GN},(_,i)=>`<i class="${i+1<=stepno?'on':''}"></i>`).join('')}<span>Krok ${stepno} z ${GN}</span><button class="${q.type==='code'?'gbk pill':'gbk linkbtn'}" id="back" type="button">${q.type==='code'?'Zmień numer':'← Wstecz'}</button></div>`;
+    const dots=`<div class="gdots" aria-label="Krok ${stepno} z ${GN}">${Array.from({length:GN},(_,i)=>`<i class="${i+1<=stepno?'on':''}"></i>`).join('')}<span>${VE?'Ostatni krok':'Krok '+stepno+' z '+GN}</span><button class="${q.type==='code'?'gbk pill':'gbk linkbtn'}" id="back" type="button">${q.type==='code'?'Zmień numer':'← Wstecz'}</button></div>`;
     const inner=q.type==='dname'?`${dots}<h2>Twój Plan Rozwodu jest gotowy. Jak masz na imię?</h2>
         <div style="display:grid;gap:12px;margin-top:14px"><label class="f">Imię<input type="text" id="nm" name="given-name" autocomplete="given-name" autocapitalize="words" placeholder="Jak mamy się zwracać?" value="${esc(A.name||'')}"></label></div>
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Dalej →</button>
@@ -1058,14 +1076,14 @@ function renderQuiz(){
 </label></div>
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Zapisz moje preferencje →</button>
         <p style="margin:8px 0 0;text-align:center"><button class="linkbtn" id="dback" type="button">zmień termin</button></p>`
-      :q.type==='email'?`${dots}<h2>Odbierz i zobacz swój Plan Rozwodu</h2>
+      :q.type==='email'?`${dots}<h2>${VE?'Odbierz swój wstępny Plan Rozwodu':'Odbierz i zobacz swój Plan Rozwodu'}</h2>
         <div style="display:grid;gap:12px;margin-top:14px">
           <label class="f">Imię<input type="text" id="nm" name="given-name" autocomplete="given-name" autocapitalize="words" placeholder="Jak mamy się zwracać?" value="${esc(A.name||'')}"></label>
           <label class="f">E-mail<input type="email" id="em" name="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="twoj@email.pl" value="${esc(A.email||'')}"><small class="hint">Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.</small></label>
-          <div id="emfix"></div>
+          <div id="emfix"></div>${VE?`<label class="f">Numer do dyskretnych SMS-ów <span style="font-weight:500;color:var(--muted)">(opcjonalnie)</span><div class="telgrp">${ccSel()}<input type="tel" id="ph" name="tel" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><small class="hint">Nie dzwonimy bez Twojej zgody. SMS-y są od „K Jura”, bez słowa „rozwód”.</small></label>`:''}
           <label class="consent" id="csw" ${emShape(A.email)?'':'hidden'}><input type="checkbox" id="cs" ${A.consent?'checked':''}><span>Zgadzam się na e-mail – aby otrzymać bezpłatnie koszt i Plan Rozwodu – <span id="cs-dots">… <button type="button" class="linkbtn" id="cs-more" style="padding:0;font-size:inherit">rozwiń</button></span><span id="cs-rest" class="cs-rest" hidden>lub/i kontakt SMS, telefoniczny przez Pravna Group sp. z o. o. w celu przedstawienia informacji, oferty i materiałów dotyczących usługi. Administratorem danych jest Pravna Group sp. z o. o. Szczegóły dotyczące przetwarzania danych znajdziesz w <a href="https://nowy-etap.pl/regulaminy" target="_blank" rel="noopener">Polityce Prywatności</a>.</span></span></label>
         </div>
-        <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Dalej →</button>
+        <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">${VE?'Zobacz mój plan →':'Dalej →'}</button>
         <div class="trustrow"><span>Bez spamu, wypiszesz się jednym kliknięciem</span><span>4,8/5 w Google · ponad 1000 opinii</span><span>Odpowiedzi są poufne</span></div>`
       :(VC&&q.type==='phone')?`${dots}<h2>${A.name?esc(A.name)+', g':'G'}dzie wysłać Twój Plan Rozwodu?</h2>
         <div style="display:grid;gap:12px;margin-top:12px"><label class="f">Telefon<div class="telgrp">${ccSel()}<input type="tel" id="ph" name="tel" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div></label>
@@ -1236,13 +1254,18 @@ function renderResult(){
     ${demo?'<p class="note">Przykładowy wynik (dane demo). <a href="#quiz">Zrób quiz</a>, żeby zobaczyć własny.</p>':''}
     <div class="rec">
       <span class="tag">${p.tag}</span>
-      <h1 style="margin-top:10px">${nm}wój plan jest gotowy.</h1>
+      <h1 style="margin-top:10px">${nm}wój ${VAR==='e'?'wstępny ':''}plan jest gotowy.</h1>
       <p style="margin-top:8px;color:var(--on-dark-muted)">${esc(p.name)}</p>
       <ul>${reasons.map(r=>`<li>${r}</li>`).join('')}</ul>
       <p class="quiet">Do drugiej strony nie odezwiemy się, dopóki o tym nie zdecydujesz. Do tego czasu kontaktujemy się tylko z Tobą.</p>
       <dl class="kv"><dt>Właściwy sąd</dt><dd>${esc(c)}</dd><dt>Termin w Twoim sądzie</dt><dd>${locked?'<span class="blur">ok. 3–4 mies.</span>':'Zależy od sądu. Opiekun sprawdzi go przed rozmową i poda Ci w jej trakcie.'}</dd></dl>
       ${A.email?'':`<div class="save"><label for="sv-em">Zapisz ten plan na później</label><div class="row2"><input type="email" id="sv-em" autocomplete="email" placeholder="twoj@email.pl"><button class="btn btn-gold" id="sv-btn" type="button" style="padding:12px 16px" disabled>Wyślij plan</button></div><p>Wyślemy go na e-mail, żeby nie zginął. Bez spamu.</p></div>`}
     </div>
+    ${VAR==='e'?`<div class="card fullp"><div class="tiers"><div class="t ok"><b>✓ Plan wstępny</b><span>ścieżka, sąd, kwestie, dokumenty i kroki. Masz go poniżej.</span></div><div class="t lk"><b>🔒 Plan pełny</b><span>powstaje w 20-minutowej rozmowie z opiekunem</span></div></div>
+      <h2 style="font-size:1.25rem;margin-top:16px">Niewiadome do rozstrzygnięcia w Twojej sprawie</h2>
+      <ul class="unk">${unknowns(a,c).map(u=>`<li><b>${esc(u[0])}</b><span class="blur">${esc(u[1])}</span></li>`).join('')}</ul>
+      <p class="note" style="margin-top:10px;color:var(--ink)">Te odpowiedzi zależą od szczegółów, których nie da się zebrać w quizie. Opiekun ustala je w <b>20-minutowej rozmowie</b> i dopisuje do Twojego planu.</p>
+      ${booked?`<p class="okbox" style="margin:12px 0 0"><b>✓ Rozmowa umówiona: ${booked}.</b> Po niej dostaniesz plan pełny.</p>`:`<button class="btn btn-gold" id="fp-go" type="button" style="margin-top:12px;width:100%">Umów 20-minutową rozmowę →</button>`}</div>`:''}
     ${A.email?`<div class="card saved"><span class="eyebrow">✓ Plan zapisany</span><p>Wysłaliśmy go na <b>${esc(A.email)}</b>. Od jutra na ten e-mail${(A.smsOff||!phoneOk(A.phone))?'':' oraz dyskretnym SMS-em'}, przez 7 dni o <select id="mtime2" class="inl" aria-label="Godzina wysyłki filmów">${['7:30','8:30','9:30','12:00','17:30','20:30'].map(x=>`<option ${(A.mtime||'9:30')===x?'selected':''}>${x}</option>`).join('')}</select>, dostaniesz jeden link do krótkiego filmu Kamila Jury.</p><p class="note" style="margin-top:8px">🔒 Piszemy i dzwonimy tylko w godzinach, które sam(a) wskażesz.</p></div>`:''}
   </div>
   <div class="a-det">
@@ -1263,9 +1286,9 @@ function renderResult(){
     <div class="card book${booked&&pick.min?' min':''}" id="book" ${locked?'hidden':''}>
       ${booked?`<button type="button" class="bk-tg" id="bk-tg" aria-label="${pick.min?'Rozwiń':'Zwiń'} informację o rozmowie">${pick.min?'▴':'▾'}</button>`:''}
       <span class="eyebrow" style="color:var(--gold-2)">Następny krok</span>
-      <h2 style="margin-top:6px">${booked?(VAR==='c'?'Rozmowa telefoniczna z opiekunem jest umówiona.':'Rozmowa z opiekunem jest umówiona.'):((A.name||a.name)?esc(A.name||a.name)+', w':'W')+' trakcie 20-minutowej rozmowy z opiekunem dowiesz się:'}</h2>
-      ${booked?`<div class="done"><b>Termin: ${booked}.</b><p class="note" style="margin-top:4px">${VAR==='c'?'Opiekun zadzwoni na numer '+esc(fmtPh())+'. Wcześniej dostaniesz dyskretne przypomnienie z linkiem do zmiany terminu. <button class="linkbtn" id="addcal" type="button" style="padding:0">Dodaj do kalendarza</button><span id="addcal-msg"></span>':phoneOk(A.phone)?'Opiekun zadzwoni na numer '+esc(fmtPh())+'. Wcześniej dostaniesz SMS z numerem, z którego zadzwoni.':'Link do rozmowy wysłaliśmy na '+esc(A.email||'Twój e-mail')+'. O umówionej godzinie kliknij go, żeby połączyć się z opiekunem.'}${VAR==='c'?'':' Termin przełożysz jednym kliknięciem.'}</p></div>`:`
-      <div class="bk-sub"><ol class="bk3"><li><span>Czy Twój rozwód zakończy się <b>bezkonfliktowo, na jednej rozprawie</b>${a.kids==='yes'?', <b>bez angażowania dzieci</b>':''}?</span></li><li><span>Co może dziś <b>niepotrzebnie pogorszyć Twoją sytuację</b>${a.together==='yes'?', kiedy mieszkacie jeszcze razem':a.together==='no'?', kiedy nie mieszkacie już razem':''}?</span></li><li><span>Jaki jest <b>największy błąd</b>, którego trzeba uniknąć <b>przed złożeniem pozwu</b>?</span></li></ol></div>
+      <h2 style="margin-top:6px">${booked?(VAR==='c'?'Rozmowa telefoniczna z opiekunem jest umówiona.':'Rozmowa z opiekunem jest umówiona.'):(VAR==='e'?((A.name||a.name)?esc(A.name||a.name)+', c':'C')+'zy chcesz teraz umówić 20-minutową rozmowę z opiekunem?':((A.name||a.name)?esc(A.name||a.name)+', w':'W')+' trakcie 20-minutowej rozmowy z opiekunem dowiesz się:')}</h2>
+      ${booked?`<div class="done"><b>Termin: ${booked}.</b><p class="note" style="margin-top:4px">${VAR==='c'?'Opiekun zadzwoni na numer '+esc(fmtPh())+'. Wcześniej dostaniesz dyskretne przypomnienie z linkiem do zmiany terminu. <button class="linkbtn" id="addcal" type="button" style="padding:0">Dodaj do kalendarza</button><span id="addcal-msg"></span>':phoneOk(A.phone)?'Opiekun zadzwoni na numer '+esc(fmtPh())+'. Wcześniej dostaniesz SMS z numerem, z którego zadzwoni.':'Link do rozmowy wysłaliśmy na '+esc(A.email||'Twój e-mail')+'. O umówionej godzinie kliknij go, żeby połączyć się z opiekunem.'}${VAR==='c'?'':' Termin przełożysz jednym kliknięciem.'}</p></div>`:(pick.hold&&VAR==='e')?`<div class="ehold"><p class="okbox" style="margin:8px 0 0"><b>✓ Wstępnie zarezerwowaliśmy termin: ${pick.hold}.</b></p><label class="f" style="margin-top:10px">Na jaki numer opiekun ma zadzwonić?<div class="telgrp">${ccSel()}<input type="tel" id="eph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456"></div></label><button class="btn btn-gold" id="ebk" type="button" style="width:100%;margin-top:10px" disabled>Potwierdzam rozmowę</button><p class="note" style="margin-top:6px">Dzwonimy tylko o tej porze. <button class="linkbtn" id="ehx" type="button" style="padding:0">zmień termin</button></p></div>`:`
+      <div class="bk-sub">${VAR==='e'?'<p style="margin:0">Opiekun rozstrzygnie na niej niewiadome z Twojego planu pełnego i poda <b>całkowity koszt z góry</b>, niezależnie od tego, czy się zdecydujesz.</p>':''}<ol class="bk3"${VAR==='e'?' hidden':''}><li><span>Czy Twój rozwód zakończy się <b>bezkonfliktowo, na jednej rozprawie</b>${a.kids==='yes'?', <b>bez angażowania dzieci</b>':''}?</span></li><li><span>Co może dziś <b>niepotrzebnie pogorszyć Twoją sytuację</b>${a.together==='yes'?', kiedy mieszkacie jeszcze razem':a.together==='no'?', kiedy nie mieszkacie już razem':''}?</span></li><li><span>Jaki jest <b>największy błąd</b>, którego trzeba uniknąć <b>przed złożeniem pozwu</b>?</span></li></ol></div>
       <p class="bk-q">Kiedy chcesz bezpłatnie omówić swój Plan Rozwodu?</p>
       <div class="bk-row">
       <select id="bk-day" class="bk-day" aria-label="Dzień rozmowy">${dd.slice(0,2).map((d,i)=>`<option value="${i}" ${pick.day===i?'selected':''}>${i===0?'Dziś':(dd[1]-dd[0])===864e5?'Jutro':DN[d.getDay()]}, ${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}</option>`).join('')}</select>
@@ -1285,14 +1308,16 @@ function renderResult(){
       <p class="note" style="margin-top:4px;font-weight:700">Rozmowa niczego nie uruchamia.</p>
     </div>
   </div>
-  <div class="a-sales"><div class="sales"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: ${VAR!=='a'?(VAR==='d'?'D, nowy quiz z końcówką V3 (e-mail, kalendarz, numer; rozmowa 5–10 min)':VAR==='c'?'C, numer przed terminem · kanał: '+((A.chan||'sms')==='wa'?'WhatsApp':'SMS')+(A.gsms?' · prosi o propozycję terminu SMS-em':''):'B, termin przed planem')+(A.gskip?' (krok z terminem pominięty)':''):'A, plan od razu'}.<br>Scoring: <b class="${hot==='Gorący'?'hot':''}">${sc} pkt · ${hot}</b><br>Segment: ${(()=>{ const dec=a.stage==='decided'||a.stage==='talked', cons=a.stage==='considering', tg=a.together==='yes', ap=a.together==='no'; if(!(dec||cons)||!(tg||ap)) return 'poza tabelą (sprawa w sądzie albo brak odpowiedzi)'; const k=(ap?'osobno':'razem')+', '+(dec?'zdecydowani':'rozważa'); const r={'osobno, zdecydowani':'6,4%','osobno, rozważa':'2,8%','razem, zdecydowani':'3,9%','razem, rozważa':'1,5%'}[k]; return k+' · umowa z '+r+' leadów z telefonem (dane historyczne)'; })()}.<br>Kąt rozmowy: ${a.kids==='yes'?'dobro dzieci i porozumienie rodzicielskie':'szybkość i koszt'}${a.home&&a.home!=='no'?'; dosprzedaż: podział majątku'+(a.home==='credit'?' i kredyt':''):''}${a.partner!=='yes'?'; obiekcja: druga strona (mediator zaprasza)':''}.<br>Priorytety klienta: ${(a.pri||[]).map(x=>(PRI.find(p=>p[0]===x)||['',x])[1]).join(', ')||'brak'}.<br>Rozmowa: ${a.noPhone?'brak numeru':(booked?'20 min z opiekunem, '+booked:'bez terminu, wysłać SMS z prośbą o porę')}. Filmy: ${esc(a.mtime||'9:30')}, ${a.smsOff?'tylko e-mail':'e-mail i SMS'}. Mieszkają razem: ${a.together==='yes'?'tak, dzwonić tylko o wybranej porze':a.together==='no'?'nie':'brak odpowiedzi'}. Telefon: ${a.phone?'podany':'brak (tylko e-mail, do nurturingu)'}${booked?' · rozmowa: '+booked:''}.</div></div>`;
+  <div class="a-sales"><div class="sales"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: ${VAR!=='a'?(VAR==='e'?'E, numer opcjonalny, plan wstępny i pełny · telefon: '+(phoneOk(A.phone)?'podany':'brak'):VAR==='d'?'D, nowy quiz z końcówką V3 (e-mail, kalendarz, numer; rozmowa 5–10 min)':VAR==='c'?'C, numer przed terminem · kanał: '+((A.chan||'sms')==='wa'?'WhatsApp':'SMS')+(A.gsms?' · prosi o propozycję terminu SMS-em':''):'B, termin przed planem')+(A.gskip?' (krok z terminem pominięty)':''):'A, plan od razu'}.<br>Scoring: <b class="${hot==='Gorący'?'hot':''}">${sc} pkt · ${hot}</b><br>Segment: ${(()=>{ const dec=a.stage==='decided'||a.stage==='talked', cons=a.stage==='considering', tg=a.together==='yes', ap=a.together==='no'; if(!(dec||cons)||!(tg||ap)) return 'poza tabelą (sprawa w sądzie albo brak odpowiedzi)'; const k=(ap?'osobno':'razem')+', '+(dec?'zdecydowani':'rozważa'); const r={'osobno, zdecydowani':'6,4%','osobno, rozważa':'2,8%','razem, zdecydowani':'3,9%','razem, rozważa':'1,5%'}[k]; return k+' · umowa z '+r+' leadów z telefonem (dane historyczne)'; })()}.<br>Kąt rozmowy: ${a.kids==='yes'?'dobro dzieci i porozumienie rodzicielskie':'szybkość i koszt'}${a.home&&a.home!=='no'?'; dosprzedaż: podział majątku'+(a.home==='credit'?' i kredyt':''):''}${a.partner!=='yes'?'; obiekcja: druga strona (mediator zaprasza)':''}.<br>Priorytety klienta: ${(a.pri||[]).map(x=>(PRI.find(p=>p[0]===x)||['',x])[1]).join(', ')||'brak'}.<br>Rozmowa: ${a.noPhone?'brak numeru':(booked?'20 min z opiekunem, '+booked:'bez terminu, wysłać SMS z prośbą o porę')}. Filmy: ${esc(a.mtime||'9:30')}, ${a.smsOff?'tylko e-mail':'e-mail i SMS'}. Mieszkają razem: ${a.together==='yes'?'tak, dzwonić tylko o wybranej porze':a.together==='no'?'nie':'brak odpowiedzi'}. Telefon: ${a.phone?'podany':'brak (tylko e-mail, do nurturingu)'}${booked?' · rozmowa: '+booked:''}.</div></div>`;
   const bd=$('#bk-day'); if(bd) bd.onchange=()=>{ pick.day=+bd.value; pick.slot=null; renderResult(); };
   const lt=$('details.later'); if(lt) lt.addEventListener('toggle',()=>{pick.open=lt.open;});
   $$('[data-slot]').forEach(b=>b.onclick=()=>{ pick.slot=b.dataset.slot; $$('[data-slot]').forEach(x=>x.classList.toggle('on',x===b)); $('#bk').disabled=false; });
   const ac=$('#addcal'); if(ac) ac.onclick=()=>{ $('#addcal-msg').textContent=' W produkcie: plik .ics z terminem rozmowy.'; };
   const tg=$('#bk-tg'); if(tg) tg.onclick=()=>{ pick.min=!pick.min; renderResult(); };
   if(pick.day>1) pick.day=0;
-  const bk=$('#bk'); if(bk) bk.onclick=()=>{ const d=dd[pick.day]; booked=`${pick.day===0?'dziś':((dd[1]-dd[0])===864e5?'jutro':DN[d.getDay()]+' '+d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0'))}, ${pick.slot}`; renderResult(); };
+  const bk=$('#bk'); if(bk) bk.onclick=()=>{ const d=dd[pick.day]; const lab=`${pick.day===0?'dziś':((dd[1]-dd[0])===864e5?'jutro':DN[d.getDay()]+' '+d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0'))}, ${pick.slot}`; if(VAR==='e'&&!phoneOk(A.phone)){ pick.hold=lab; renderResult(); return; } booked=lab; renderResult(); };
+  const eph=$('#eph'); if(eph){ eph.oninput=()=>{ $('#ebk').disabled=!phoneOk(eph.value); }; $('#ebk').onclick=()=>{ A.phone=eph.value; save(); booked=pick.hold; pick.hold=null; renderResult(); }; $('#ehx').onclick=()=>{ pick.hold=null; renderResult(); }; }
+  const fg=$('#fp-go'); if(fg) fg.onclick=()=>{ const b=$('#book'); b.scrollIntoView({behavior:'smooth',block:'center'}); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge'); };
   const mt2=$('#mtime2'); if(mt2) mt2.onchange=e=>{ A.mtime=e.target.value; save(); renderResult(); };
   const ut=$('#ul-tel'); if(ut){ ut.oninput=()=>{ $('#ul-btn').disabled=!phoneOk(ut.value); }; $('#ul-btn').onclick=()=>{ A.phone=ut.value; A.noPhone=false; save(); renderResult(); window.scrollTo(0,0); }; $('#nocall2').onclick=()=>{ $('#alt-msg2').textContent='W produkcie: zakup online (divory) albo czat. Lead trafia do sekwencji e-mail A.'; }; }
   $('#now').onclick=()=>{ $('#alt-msg').textContent='W produkcie: wizytówka vCard z numerami presalesu (+48 22 000 00 00, dane demo).'; };
@@ -1334,7 +1359,7 @@ function route(){
 function fabClose(){ $('#fab-menu').hidden=true; $('#fab-btn').setAttribute('aria-expanded','false'); }
 $('#fab-btn').onclick=()=>{ const m=$('#fab-menu'); m.hidden=!m.hidden; $('#fab-btn').setAttribute('aria-expanded',String(!m.hidden)); };
 document.addEventListener('click',e=>{ if(!e.target.closest('#fab')) fabClose(); });
-$$('.fab-menu a[data-var]').forEach(x=>{ x.classList.toggle('on',x.dataset.var===VAR); x.onclick=()=>{ VAR=x.dataset.var; try{localStorage.setItem('ne-var4',VAR)}catch(e){} A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); $$('.fab-menu a[data-var]').forEach(y=>y.classList.toggle('on',y.dataset.var===VAR)); setTimeout(route,0); }; });
+$$('.fab-menu a[data-var]').forEach(x=>{ x.classList.toggle('on',x.dataset.var===VAR); x.onclick=()=>{ VAR=x.dataset.var; try{localStorage.setItem('ne-var5',VAR)}catch(e){} A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); $$('.fab-menu a[data-var]').forEach(y=>y.classList.toggle('on',y.dataset.var===VAR)); setTimeout(route,0); }; });
 $('#reset').onclick=()=>{ A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); setTimeout(route,0); };
 addEventListener('hashchange',route);
 route();
