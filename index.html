@@ -407,6 +407,7 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .fwho{align-self:flex-start;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:4px 0 -4px 2px}
 .fsys{align-self:center;display:flex;align-items:center;gap:10px;width:100%;margin:10px 0 2px;font-size:.78rem;font-weight:800;color:var(--gold-2);text-transform:uppercase;letter-spacing:.08em}
 .fsys::before,.fsys::after{content:"";flex:1;height:1px;background:var(--gold)}
+.fsec[hidden]{display:none}
 .fsec{align-self:center;text-align:center;font-size:.82rem;color:var(--ok);background:var(--ok-soft);border-radius:999px;padding:6px 14px}
 .fstat{align-self:flex-start;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;background:var(--sunk);font-size:.9rem;font-weight:700;color:var(--ink)}
 .fstat .spin{width:18px;height:18px;border-width:3px}
@@ -1054,6 +1055,7 @@ select.inl{display:inline-block;width:auto;padding:4px 8px;font-weight:700;borde
       <option>rozwód a mieszkanie i kredyt</option>
     </select>
     <span class="eyebrow">Wersja lejka</span>
+    <a href="#lp" data-var="h">H: jak G, krótsze treści (Hormozi, Brunson, Cialdini)</a>
     <a href="#lp" data-var="g">G: jak F, krótsza droga do terminów, dowód, ekran po potwierdzeniu</a>
     <a href="#lp" data-var="f">F: e-mail, rozmowa z opiekunem jak czat, plan w tabeli</a>
     <a href="#lp" data-var="e">E: numer opcjonalny, plan wstępny i pełny</a>
@@ -1126,7 +1128,7 @@ const S=[
  {id:'lead',type:'email'},
  {id:'slotd',type:'slot',if:()=>VAR==='d'},
  {id:'slot',type:'slot',if:()=>VAR==='b'},
- {id:'phone',type:'phone',if:()=>VAR!=='e'&&VAR!=='f'&&VAR!=='g'},
+ {id:'phone',type:'phone',if:()=>!['e','f','g','h'].includes(VAR)},
  {id:'slotc',type:'slot',if:()=>VAR==='c'},
  {id:'code',type:'code',if:()=>VAR==='a'}
 ];
@@ -1135,7 +1137,7 @@ const S=[
 let A={}, idx=0;
 try{const s=JSON.parse(localStorage.getItem('ne-quiz5')||'null'); if(s&&s.A){A=s.A; idx=s.idx||0;}}catch(e){}
 const save=()=>{try{localStorage.setItem('ne-quiz5',JSON.stringify({A,idx}))}catch(e){}};
-let VAR='g'; try{ const pv=new URLSearchParams(location.search).get('v'); VAR=['a','b','c','d','e','f','g'].includes(pv)?pv:(localStorage.getItem('ne-var7')||'g'); }catch(e){}
+let VAR='h'; try{ const pv=new URLSearchParams(location.search).get('v'); VAR=['a','b','c','d','e','f','g','h'].includes(pv)?pv:(localStorage.getItem('ne-var8')||'h'); }catch(e){}
 const SL=[['17:00','17:30','18:30','19:00'],['9:00','10:30','12:00','14:00','16:30','18:00','19:00','19:30']];
 const DG=[['17:05','17:20','17:35','18:05','18:20','18:50','19:05','19:20'],['08:05','!08:20','!08:35','!08:50','!09:05','09:20','10:35','!11:05','12:20','14:05','16:35'],['!08:05','!08:20','!08:35','!08:50','09:05','09:20','!10:05','11:35','13:20','15:05']];
 function dName(i,x){ const dd=days(); return i===0?'Dzisiaj':(i===1&&(dd[1]-dd[0])===864e5)?'Jutro':['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'][x.getDay()]; }
@@ -1258,7 +1260,7 @@ function renderQuiz(){
       </div><div class="veil">🔒 ${st===1?'Jeszcze dwa krótkie kroki':'Ostatni krok'}</div></div>`;
     const steps=gsteps(st);
     const VC=VAR==='c'; const GN=3, sl=VAR!=='a'?slotLabel():null;
-    const VD=VAR==='d'; const VE=VAR==='e'; const VF=VAR==='f'||VAR==='g'; const stepno=VE?3:VF?1:VD?({email:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
+    const VD=VAR==='d'; const VE=VAR==='e'; const VF=VAR==='f'||VAR==='g'||VAR==='h'; const stepno=VE?3:VF?1:VD?({email:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
     const dec=A.stage==='decided'||A.stage==='talked';
     if(q.type==='slot'&&A.gslot===undefined&&VAR!=='d'){ A.gday=0; A.gslot=SL[0][0]; A.gskip=false; save(); }
     const dd2=days();
@@ -1278,7 +1280,7 @@ function renderQuiz(){
 </label></div>
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Zapisz moje preferencje →</button>
         <p style="margin:8px 0 0;text-align:center"><button class="linkbtn" id="dback" type="button">zmień termin</button></p>`
-      :q.type==='email'?`${dotsE}<h2>${(VE||VF)?'Odbierz swój wstępny Plan Rozwodu':'Odbierz i zobacz swój Plan Rozwodu'}</h2>
+      :q.type==='email'?`${dotsE}<h2>${VAR==='h'?'Twój plan jest gotowy. Gdzie go wysłać?':(VE||VF)?'Odbierz swój wstępny Plan Rozwodu':'Odbierz i zobacz swój Plan Rozwodu'}</h2>
         <div style="display:grid;gap:12px;margin-top:14px">
           <label class="f">Imię<input type="text" id="nm" name="given-name" autocomplete="given-name" autocapitalize="words" placeholder="Jak mamy się zwracać?" value="${esc(A.name||'')}"></label>
           <label class="f">E-mail<input type="email" id="em" name="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="twoj@email.pl" value="${esc(A.email||'')}"><small class="hint">Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.</small></label>
@@ -1432,7 +1434,7 @@ let pick={day:0,slot:null,mode:'cal'}, booked=null;
 function days(){ const out=[]; const d=new Date(); d.setHours(0,0,0,0); let k=0; while(out.length<3){ const x=new Date(d.getTime()+k*864e5); if(x.getDay()!==0) out.push(x); k++; } return out; }
 const DN=['niedz.','pon.','wt.','śr.','czw.','pt.','sob.'];
 function renderResult(){
-  if(VAR==='f'||VAR==='g'){ renderF(); return; }
+  if(['f','g','h'].includes(VAR)){ renderF(); return; }
   if(VAR!=='a'&&!booked&&A.done&&slotLabel()&&!A.gused){ booked=slotLabel(); A.gused=true; save(); }
   const demo=!A.done;
   const a=demo?{stage:'talked',partner:'unsure',kids:'yes',home:'credit',fault:'no',contact:'hard',abroad:'pl',city:'Poznań',still:'yes',when:'asap',pri:['kids','cost'],name:'Anna',phone:'600123456',ct:'eve'}:A;
@@ -1578,7 +1580,7 @@ function fseq(nodes){ if(!nodes.length||matchMedia('(prefers-reduced-motion:redu
       if(n.classList.contains('fm')){ const t=document.createElement('div'); t.className='ftyp'; t.innerHTML='<i></i><i></i><i></i>'; n.before(t); t.scrollIntoView({behavior:'smooth',block:'nearest'}); await wait(650); t.remove(); if(id!==fseqId) return; }
       n.classList.remove('hid'); n.classList.add('in'); n.scrollIntoView({behavior:'smooth',block:'nearest'}); await wait(n.classList.contains('fm')?480:160); } })(); }
 function renderF(){
-  document.body.classList.add('fchatmode'); const VG=VAR==='g';
+  document.body.classList.add('fchatmode'); const VH=VAR==='h'; const VG=VAR==='g'||VH;
   if(!pick.fdl){ pick.fdl=true; const fq=new URLSearchParams(location.search).get('film'); if(fq&&A.funl){ pick.fopened=true; pick.fseen=true; pick.flink=true; pick.ftab='know'; pick.ffilm=Math.max(0,Math.min(6,(+fq||1)-1)); } }
   if(!pick.fopened){ pick.fopened=true; $('#res').innerHTML='<div class="fwrap"><div class="fopen"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h32a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H22l-9 7v-7H8a3 3 0 0 1-3-3V13a3 3 0 0 1 3-3z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle class="d1" cx="16" cy="22" r="2.4"/><circle class="d2" cx="24" cy="22" r="2.4"/><circle class="d3" cx="32" cy="22" r="2.4"/></svg><b>Otwieram okno rozmowy…</b></div></div>'; setTimeout(renderF,1400); return; }
   const a=A, c=court()||'ustalimy w rozmowie', p=path(), P=personal(a), HK=hooks(a,c), FX=facts(a), dd=days(); const today=new Date(); const dstr=today.getDate()+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+today.getFullYear();
@@ -1594,8 +1596,8 @@ function renderF(){
   const grid=`<div class="dcols">${dd.map((x,i)=>`<div class="dcol"><div class="dh"><b>${dName(i,x)}</b><small>${x.getDate()}.${String(x.getMonth()+1).padStart(2,'0')}</small></div>${DG[i].map(t=>t[0]==='!'?`<s>${t.slice(1)}</s>`:`<button type="button" data-fslot="${t}" data-fday="${i}">${t}</button>`).join('')}</div>`).join('')}</div>`;
   const an=pick.fseen?'':' anim';
   const confM=st==='phone'&&!!A.funl&&phoneOk(A.phone);
-  const whyH=`<div class="fwhy" style="margin-top:12px"><b>Dlaczego warto wybrać termin teraz</b><ul><li>Czas oczekiwania w Twoim sądzie sprawdzam w dniu rozmowy, więc dostaniesz aktualny.</li><li>Przy rozmowie umówionej w ciągu 24 godzin dostaniesz też ${a.kids==='yes'?'wzór porozumienia rodzicielskiego':'listę rzeczy do ustalenia przed pozwem'}.</li></ul></div>`;
-  const cal=(st==='pick'||confM)?`<p class="bk-q" style="margin-top:12px">Wolne terminy 15-minutowej rozmowy:</p><div class="dgrid" style="margin:6px 0 0;border:0;padding:0">${grid}<button class="linkbtn" id="f-more" type="button">⌄ Zobacz więcej godzin</button></div>${VG?whyH:''}`:'';
+  const whyH=`<div class="fwhy" style="margin-top:12px"><b>Dlaczego warto wybrać termin teraz</b><ul><li>Czas oczekiwania w Twoim sądzie sprawdzam w dniu rozmowy, więc dostaniesz aktualny.</li><li>Przy rozmowie zarezerwowanej w ciągu 24 godzin dostaniesz też dodatkowe bezpłatne materiały do swojej sprawy.</li></ul></div>`;
+  const cal=(st==='pick'||confM)?`<p class="bk-q" style="margin-top:12px">Wolne terminy 15-minutowej rozmowy:</p><div class="dgrid" style="margin:6px 0 0;border:0;padding:0">${grid}<button class="linkbtn" id="f-more" type="button">⌄ Zobacz więcej godzin</button></div>${VH?'<p class="note" style="margin-top:12px;color:var(--ink)">Przy rozmowie <b>zarezerwowanej w ciągu 24 godzin</b> dostaniesz też dodatkowe bezpłatne materiały do swojej sprawy.</p>':VG?whyH:''}`:'';
   const slots=(st==='pick'||confM)?``
     :(st==='phone'&&A.funl&&phoneOk(A.phone))?`<div class="fu">${esc(pick.fslot)}</div><div class="fm" id="f-last">Zapisałem wstępnie termin: <b>${esc(pick.fslot)}</b>. Zadzwonię na numer <b style="white-space:nowrap">${esc(fmtPh())}</b>. Potwierdzasz?<button class="btn btn-gold" id="f-conf" type="button" style="width:100%;margin-top:10px">Potwierdzam rozmowę</button><p style="margin:8px 0 0;text-align:center"><button class="linkbtn" id="f-x" type="button" style="padding:0">Zmień termin</button></p></div>`
     :st==='phone'?`<div class="fu">${esc(pick.fslot)}</div><div class="fm" id="f-last">Zapisałem wstępnie termin: <b>${esc(pick.fslot)}</b>. Na jaki numer mam zadzwonić?<div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-ph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456"></div><button class="btn btn-gold" id="f-ok" type="button" style="width:100%;margin-top:10px" disabled>Potwierdzam rozmowę</button><p class="note" style="margin-top:6px">Dzwonię tylko o tej porze. <button class="linkbtn" id="f-x" type="button" style="padding:0">zmień termin</button></p></div>`
@@ -1603,22 +1605,27 @@ function renderF(){
   const un=!!A.funl, fs=pick.fph||'need', mat=un&&pick.fstage!=='match', late=pick.fjust?' late':'';
   const stp=(k,t,fin)=>`<div class="fstp${fin?' fin':''}" style="--k:${k}"><i></i><span>${t}</span></div>`;
   const lockedH=`Wygenerowałem go na podstawie doświadczenia z naszych 2600 spraw rozwodowych.<div class="fplan lk"><b>🔒 Wstępny Plan Rozwodu</b><span>Ścieżka: <i class="blur">${esc(p.name)}</i></span><span>Właściwy sąd: <i class="blur">${esc(c)}</i></span><span>Kwestie do ustalenia: <i class="blur">${P.issues.map(esc).join(', ')}</i></span><span>Dokumenty: <i class="blur">${P.docs.length} pozycji</i></span><em>Plan odblokuje się po zabezpieczeniu rozmowy</em></div><span class="fgr"><b class="st">★★★★★</b> <b>4,8/5</b> w <svg class="glogo" viewBox="0 0 24 24" aria-label="Google" role="img"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg> Google · ponad 1000 opinii</span>`;
-  const intro=`Dziękuję${hon()?', '+hon():''}. <b>Ta rozmowa jest prywatna.</b> Po jej zabezpieczeniu kodem SMS załączony poniżej Wstępny Plan automatycznie się odblokuje.`;
+  const introH=`${hon()?hon()+', ':''}<b>${hon()?'T':'T'}wój wstępny Plan Rozwodu jest gotowy.</b> Zrobiłem go na podstawie 2600 naszych spraw.`;
+  const intro0=`Dziękuję${hon()?', '+hon():''}. <b>Ta rozmowa jest prywatna.</b> Po jej zabezpieczeniu kodem SMS załączony poniżej Wstępny Plan automatycznie się odblokuje.`;
+  const intro=VH?introH:intro0;
   const knote=VG?`<span class="fnote">Wiadomość przygotowana przez Kamila, wysyłana automatycznie.</span>`:'';
   const gateMsg=`<span class="fwho">Kamil Jura</span>`+(un?`<div class="fm">${intro}</div>${knote}<div class="fu">${esc(fmtPh())}</div>`
     :fs==='sending'?`<div class="fm">${intro}</div>${knote}<div class="fu">${esc(fmtPh())}</div><div class="fstat" id="f-last"><i class="spin"></i>Wysyłam kod SMS…</div>`
     :fs==='code'?`<div class="fm">${intro}</div>${knote}<div class="fu">${esc(fmtPh())}</div><div class="fm" id="f-last">Wysłano kod SMS na numer <b style="white-space:nowrap">${esc(fmtPh())}</b>. Wpisz go, żeby zabezpieczyć rozmowę.<input type="text" id="f-otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="• • • •" style="margin-top:10px"><button class="btn btn-gold" id="f-unl" type="button" style="width:100%;margin-top:10px" disabled>Potwierdzam i odbieram plan</button><p class="note" style="margin-top:8px">Kod nie doszedł albo numer jest błędny? <button class="linkbtn" id="f-chg" type="button" style="padding:0">Zmień numer</button></p><p class="note" style="margin-top:2px">W prototypie zadziała dowolne 4 cyfry.</p></div>`
+    :VH?`<div class="fm" style="--i:0">${intro}<p style="margin-top:8px">Ta rozmowa jest prywatna. Otworzy ją tylko osoba z Twoim telefonem, dlatego proszę o numer.</p><p style="margin-top:8px"><b>Nikt nie zadzwoni bez Twojej zgody.</b></p><div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-gph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><button class="btn btn-gold" id="f-send" type="button" style="width:100%;margin-top:10px" disabled>Odblokuj mój plan</button><p class="note" style="margin-top:6px">Dostaniesz SMS z kodem od nadawcy „K Jura”, bez słowa „rozwód”.</p><div style="margin-top:12px">${lockedH.replace('Wygenerowałem go na podstawie doświadczenia z naszych 2600 spraw rozwodowych.','')}</div></div>${knote}`
     :`<div class="fm" style="--i:0">${intro}<p style="margin-top:8px">Dyskrecję stawiam sobie jako priorytet. Dlatego dostęp do tego okna, rozmowy i Twojego planu będziesz mieć tylko Ty, przez swój numer telefonu. <b>Wpisz go, żeby zabezpieczyć rozmowę.</b> <u>Spokojnie, nikt nie zadzwoni bez Twojej zgody.</u></p><div class="telgrp" style="margin-top:10px">${ccSel()}<input type="tel" id="f-gph" inputmode="tel" autocomplete="tel-national" placeholder="600 123 456" value="${esc(A.phone||'')}"></div><p class="note" style="margin-top:6px">Dostaniesz SMS z 4-cyfrowym kodem, od nadawcy „K Jura”, bez słowa „rozwód”.</p><button class="btn btn-gold" id="f-send" type="button" style="width:100%;margin-top:10px" disabled>Zabezpiecz rozmowę i odbierz plan</button><div style="margin-top:14px">${lockedH}</div></div>${knote}`);
   const planBtn=`<button class="fplan gray" id="f-open" type="button"><b>📄 Wstępny Plan Rozwodu – ${nm||'Twój plan'} (${dstr})</b><span class="in">5 kroków, ${P.docs.length} dokumentów, sąd i koszty.</span><em>Otwórz plan →</em></button><span class="fgr"><b class="st">★★★★★</b> <b>4,8/5</b> w <svg class="glogo" viewBox="0 0 24 24" aria-label="Google" role="img"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg> Google · ponad 1000 opinii</span>`;
-  const planCard=un?`<div class="fsec">🔒 Rozmowa zabezpieczona. Czat jest przypisany do numeru <b style="white-space:nowrap">${esc(fmtPh())}</b>.</div>`
+  const planCard=un?`<div class="fsec"${VH?' hidden':''}>🔒 Rozmowa zabezpieczona. Czat jest przypisany do numeru <b style="white-space:nowrap">${esc(fmtPh())}</b>.</div>`
     :(fs==='need'?'':`<div class="fm" style="--i:1">${lockedH}</div>`);
-  const proof=`<div class="fm fslots${late}" style="border-style:dashed">${pick.fpv?`<div class="fplayer" style="margin-top:0"><img src="${IMG_K}" alt=""><i>▶</i><em>prototyp: tu odtwarza się film z wypowiedziami klientów</em></div><p class="note" style="margin-top:8px">Klienci o cenie, rozprawie i dzieciach · ok. 2 min · z napisami</p>`:`<p style="margin:0 0 10px">Zobacz wideo z osobami, które przed umówieniem rozmowy były w tej samej sytuacji co Ty.</p><button class="btn" id="f-pv" type="button" style="width:100%;background:var(--teal-900);color:#fff">▶ Zobacz wideo</button>`}</div>`;
-  const matMsgs=VG?`<div class="fm${late}" style="--j:1">Dzień dobry${hon()?', '+hon():''}. Specjalizuję się w rozwodach <b>${spec}</b>.<p style="margin-top:8px"><b>Twój wstępny plan jest poniżej, razem z moimi terminami.</b> Zostały <b>ostatnie elementy Planu</b>. Ich uzupełnienie zajmie nam <b>15 minut rozmowy</b>:</p><ul>${HK.slice(0,3).concat(a.kids==='yes'?[KT]:[]).map(u=>`<li>${bh(u)}</li>`).join('')}</ul></div>
+  const proof=`<div class="fm fslots${late}" style="border-style:dashed">${pick.fpv?`<div class="fplayer" style="margin-top:0"><img src="${IMG_K}" alt=""><i>▶</i><em>prototyp: tu odtwarza się film z wypowiedziami klientów</em></div><p class="note" style="margin-top:8px">Klienci o cenie, rozprawie i dzieciach · ok. 2 min · z napisami</p>`:`<p style="margin:0 0 10px">${VH?'Zobacz, co mówią osoby, które były w Twojej sytuacji.':'Zobacz wideo z osobami, które przed umówieniem rozmowy były w tej samej sytuacji co Ty.'}</p><button class="btn" id="f-pv" type="button" style="width:100%;background:var(--teal-900);color:#fff">▶ Zobacz wideo</button>`}</div>`;
+  const t3=(a.partner&&a.partner!=='yes')?(a.sex==='f'?'<b>jak powiedzieć mężowi</b>, żeby usiadł do rozmów':a.sex==='m'?'<b>jak powiedzieć żonie</b>, żeby usiadła do rozmów':'<b>jak powiedzieć drugiej stronie</b>, żeby usiadła do rozmów'):a.kids==='yes'?'<b>jak ułożyć opiekę</b>, żeby dzieci były chronione':'<b>co ustalić najpierw</b>, żeby wystarczyła jedna rozprawa';
+  const matMsgs=VH?`<div class="fm${late}">Dzień dobry${hon()?', '+hon():''}. Jestem opiekunem Twojego planu i sprawy. Specjalizuję się w rozwodach <b>${spec}</b>.<p style="margin-top:8px">W Twoim planie zostały trzy rzeczy, których nie da się ustalić bez rozmowy:</p><ul><li><b>dokładna cena</b> dla Was obojga</li><li><b>kiedy realnie możesz mieć wyrok</b></li><li>${t3}</li></ul><p style="margin-top:8px">Zajmie nam to <b>15 minut</b>. Do niczego Cię to nie zobowiązuje.</p></div>`
+    :VG?`<div class="fm${late}" style="--j:1">Dzień dobry${hon()?', '+hon():''}. Specjalizuję się w rozwodach <b>${spec}</b>.<p style="margin-top:8px"><b>Twój wstępny plan jest poniżej, razem z moimi terminami.</b> Zostały <b>ostatnie elementy Planu</b>. Ich uzupełnienie zajmie nam <b>15 minut rozmowy</b>:</p><ul>${HK.slice(0,3).concat(a.kids==='yes'?[KT]:[]).map(u=>`<li>${bh(u)}</li>`).join('')}</ul></div>
         <div class="fm${late}" style="--j:2"><b>Rozmowa do niczego nie zobowiązuje</b>, a pełny plan dostaniesz niezależnie od decyzji. Sprawdź wstępny Plan i wybierz termin.</div>`
     :`<div class="fm${late}" style="--j:1">Dzień dobry${hon()?', '+hon():''}. Specjalizuję się w rozwodach <b>${spec}</b> i z chęcią pomogę Ci dokończyć plan.</div>
         <div class="fm${late}" style="--j:2"><b>Twój wstępny plan jest poniżej, razem z moimi terminami.</b> Zostały <b>ostatnie elementy Planu</b>. W ciągu <b>15 minut</b> przejdziemy przez te tematy:<ul>${HK.slice(0,5).map(u=>`<li>${bh(u)}</li>`).join('')}</ul><p style="margin-top:8px">Po rozmowie Twój plan pełny będzie gotowy, niezależnie od tego, czy zdecydujesz się na współpracę.</p></div>
         <div class="fm${late}" style="--j:3"><b>Rozmowa do niczego nie zobowiązuje.</b> Poniżej moje wolne terminy. Wybierz ten, który Ci pasuje.</div>`;
-  const stepsB=fin=>`<div class="fstps" id="f-stat">${stp(0.3,'Przypisuję opiekuna specjalizującego się w rozwodach par '+(a.kids==='yes'?'mających dzieci':'bez małoletnich dzieci'),fin)}${stp(1.4,'Przypisałem: <b>Mateusz Malczewski</b>',fin)}${stp(2.4,'Zmieniam hosta rozmowy na: <b>Mateusz Malczewski</b>',fin)}${stp(3.3,'Odblokowuję plan',fin)}</div>`;
+  const stepsB=fin=>VH?`<div class="fstps" id="f-stat">${stp(0.2,'Rozmowa zabezpieczona kodem',fin)}${stp(1.1,'Przypisuję opiekuna planu i sprawy',fin)}${stp(2.0,'Twój opiekun: <b>Mateusz Malczewski</b>, specjalizacja: rozwody '+spec,fin)}</div>`:`<div class="fstps" id="f-stat">${stp(0.3,'Przypisuję opiekuna specjalizującego się w rozwodach par '+(a.kids==='yes'?'mających dzieci':'bez małoletnich dzieci'),fin)}${stp(1.4,'Przypisałem: <b>Mateusz Malczewski</b>',fin)}${stp(2.4,'Zmieniam hosta rozmowy na: <b>Mateusz Malczewski</b>',fin)}${stp(3.3,'Odblokowuję plan',fin)}</div>`;
   const rest=!un?'':!mat?stepsB(false)
     :`${stepsB(true)}<span class="fwho${late}">Mateusz Malczewski</span>
         ${matMsgs}
@@ -1651,7 +1658,7 @@ function renderF(){
       <span class="fgr" style="margin-top:4px"><b class="st">★★★★★</b> <b>4,8/5</b> w <svg class="glogo" viewBox="0 0 24 24" aria-label="Google" role="img"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg> Google · ponad 1000 opinii</span><p class="note" style="margin-top:6px;color:var(--ink)">Uzupełnione <b>${known.length+extra+FX.length} z ${tot+FX.length}</b> pozycji. Pozostałe opiekun ustala w 15-minutowej rozmowie. Plan wygenerowany automatycznie na podstawie Twoich odpowiedzi i doświadczenia z 2600 spraw rozwodowych.</p>
       <div class="fprog"><i style="width:${Math.round((known.length+extra+FX.length)/(tot+FX.length)*100)}%"></i></div>
       <table class="ftab"><tbody><tr class="sech"><td colspan="3">Twoja sytuacja (z Twoich odpowiedzi, nie musisz do tego wracać)</td></tr>${FX.map(r=>`<tr><th>${r[0]}</th><td>${esc(r[1])}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="sech"><td colspan="3">Plan wstępny</td></tr>${known.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td class="s ok">✓</td></tr>`).join('')}<tr class="sech"><td colspan="3">Twoje kroki, po kolei</td></tr><tr><td colspan="3"><ol class="fst">${fsteps.map(x=>`<li><b>${x[0]}</b><span>${x[1]}</span></li>`).join('')}</ol></td></tr><tr class="sech"><td colspan="3">Dokumenty do przygotowania (${P.docs.length})</td></tr><tr><td colspan="3"><ul class="fck">${P.docs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></td></tr><tr class="sech"><td colspan="3">Co możesz zrobić już dziś</td></tr><tr><td colspan="3"><ul class="fck go">${todo.map(x=>`<li>${x}</li>`).join('')}</ul></td></tr><tr class="lkh"><td colspan="3">🔒 Ostatnie elementy Planu (w 15 minut rozmowy):</td></tr>${locked.map(r=>`<tr class="lk"><th colspan="2">${esc(r)}<span class="blur" style="display:block;margin-top:3px;font-weight:400;font-size:.84rem">odpowiedź ustali opiekun w rozmowie</span></th><td class="s">🔒</td></tr>`).join('')}</tbody></table>
-      <div class="sales" style="margin-top:16px"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: ${VG?'G':'F'}, czat (Kamil Jura, potem opiekun sprawy), plan odblokowany numerem i kodem SMS. Telefon: ${phoneOk(A.phone)?'podany':'brak'}. Rozmowa: ${booked||'nieumówiona'}.</div>
+      <div class="sales" style="margin-top:16px"><b>Widok dla zespołu sprzedaży (tylko w prototypie)</b><br>Wersja lejka: ${VH?'H':VG?'G':'F'}, czat (Kamil Jura, potem opiekun sprawy), plan odblokowany numerem i kodem SMS. Telefon: ${phoneOk(A.phone)?'podany':'brak'}. Rozmowa: ${booked||'nieumówiona'}.</div>
       <div class="fcta">${booked?`<p class="okbox" style="margin:0"><b>✓ Rozmowa umówiona: ${booked}.</b> Po niej opiekun uzupełni zablokowane pola.</p>`:`<button class="btn btn-gold" id="f-cta" type="button" style="width:100%">Ostatnie elementy Planu w 15 minut: wybierz godzinę →</button>`}</div>
     </div></div>`;
   }
@@ -1693,7 +1700,7 @@ function renderF(){
   const fre=$('#f-re'); if(fre) fre.onclick=()=>{ booked=null; pick.fslot=null; renderF(); const x=$('.fslots'); if(x) x.scrollIntoView({behavior:'smooth',block:'center'}); };
   const fi=$('#f-in'); if(fi){ const snd=()=>{ const v=fi.value.trim(); if(!v) return; (pick.fmy=pick.fmy||[]).push(v); renderF(); const l=$('#f-sent'); if(l) l.scrollIntoView({behavior:'smooth',block:'center'}); }; $('#f-snd').onclick=snd; fi.onkeydown=e=>{ if(e.key==='Enter') snd(); }; }
   const gp=$('#f-gph'); if(gp){ const ck=()=>{ $('#f-send').disabled=!phoneOk(gp.value); }; gp.oninput=ck; ck(); $('#f-send').onclick=()=>{ A.phone=gp.value; save(); pick.fph='sending'; renderF(); const l=$('#f-last'); if(l) l.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>{ if(pick.fph!=='sending') return; pick.fph='code'; renderF(); const o=$('#f-otp'); if(o){ o.scrollIntoView({behavior:'smooth',block:'center'}); o.focus({preventScroll:true}); } },2000); }; }
-  const ot=$('#f-otp'); if(ot){ ot.oninput=()=>{ ot.value=ot.value.replace(/\D/g,'').slice(0,4); $('#f-unl').disabled=ot.value.length!==4; }; $('#f-unl').onclick=()=>{ A.funl=true; save(); pick.fstage='match'; pick.fview='chat'; renderF(); const x=$('#f-stat'); if(x) x.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>{ if(pick.fstage!=='match') return; pick.fstage='mat'; pick.fjust=true; renderF(); },4400); }; $('#f-chg').onclick=()=>{ pick.fph='need'; renderF(); const g=$('#f-gph'); if(g) g.focus(); }; }
+  const ot=$('#f-otp'); if(ot){ ot.oninput=()=>{ ot.value=ot.value.replace(/\D/g,'').slice(0,4); $('#f-unl').disabled=ot.value.length!==4; }; $('#f-unl').onclick=()=>{ A.funl=true; save(); pick.fstage='match'; pick.fview='chat'; renderF(); const x=$('#f-stat'); if(x) x.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>{ if(pick.fstage!=='match') return; pick.fstage='mat'; pick.fjust=true; renderF(); },VAR==='h'?3200:4400); }; $('#f-chg').onclick=()=>{ pick.fph='need'; renderF(); const g=$('#f-gph'); if(g) g.focus(); }; }
   const fp=$('#f-ph'); if(fp){ fp.oninput=()=>{ $('#f-ok').disabled=!phoneOk(fp.value); }; $('#f-ok').onclick=()=>{ A.phone=fp.value; save(); booked=pick.fslot; renderF(); const l=$('#f-last'); if(l) l.scrollIntoView({behavior:'smooth',block:'center'}); }; $('#f-x').onclick=()=>{ pick.fslot=null; renderF(); }; }
 }
 
@@ -1704,7 +1711,7 @@ function heroOrder(id){ /* wybrane pytanie i jego ekran reakcji idą na począte
 function renderHero(){ const q1=S[0]; $('#q1-h').textContent=q1.t; $('#q1-opts').classList.toggle('n3',q1.o.length>2);
   $('#q1-opts').innerHTML=q1.o.map(o=>`<button type="button" class="opt" data-v="${o[0]}">${o[1]}</button>`).join('');
   $$('#q1-opts .opt').forEach(b=>b.onclick=()=>{ A[q1.id]=b.dataset.v; idx=1; save(); location.hash='quiz'; }); }
-function applyKw(k,fromUser){ const v=KW[k]||DEF; $('#h1').innerHTML=v[0]; $('#sub').textContent=v[1]; $('#q1-lbl').textContent=v[3];
+function applyKw(k,fromUser){ const v=KW[k]||DEF; $('#h1').innerHTML=v[0]; $('#sub').textContent=v[1]; $('#q1-lbl').textContent=(VAR==='h'?'Bezpłatnie · ':'')+v[3];
   const want=v[2]; if(S[0].id!==want){ heroOrder('kids'); heroOrder(want); if(fromUser){ idx=0; } }
   A.kw=k||''; save(); renderHero(); }
 const urlKw=matchKw((new URLSearchParams(location.search).get('utm_term')||'').replace(/\+/g,' '));
@@ -1723,14 +1730,14 @@ function route(){
   VIEWS.forEach(x=>$('#v-'+x).hidden=x!==v);
   $$('.fab-menu a[data-v]').forEach(a=>a.classList.toggle('on',a.dataset.v===v)); $('#fab-cur').dataset.var=VAR;
   $('#fab-cur').textContent=({lp:'Strona startowa',quiz:'Quiz',wynik:'Wynik'})[v];
-  $('#fab').hidden=v!=='lp'; document.body.dataset.v=v; if(!((VAR==='f'||VAR==='g')&&v==='wynik')) document.body.classList.remove('fchatmode');
+  $('#fab').hidden=v!=='lp'; document.body.dataset.v=v; if(!(['f','g','h'].includes(VAR)&&v==='wynik')) document.body.classList.remove('fchatmode');
   if(v==='quiz') renderQuiz(); if(v==='wynik') renderResult();
   window.scrollTo(0,0); fabClose();
 }
 function fabClose(){ $('#fab-menu').hidden=true; $('#fab-btn').setAttribute('aria-expanded','false'); }
 $('#fab-btn').onclick=()=>{ const m=$('#fab-menu'); m.hidden=!m.hidden; $('#fab-btn').setAttribute('aria-expanded',String(!m.hidden)); };
 document.addEventListener('click',e=>{ if(!e.target.closest('#fab')) fabClose(); });
-$$('.fab-menu a[data-var]').forEach(x=>{ x.classList.toggle('on',x.dataset.var===VAR); x.onclick=()=>{ VAR=x.dataset.var; try{localStorage.setItem('ne-var7',VAR)}catch(e){} A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); $$('.fab-menu a[data-var]').forEach(y=>y.classList.toggle('on',y.dataset.var===VAR)); setTimeout(route,0); }; });
+$$('.fab-menu a[data-var]').forEach(x=>{ x.classList.toggle('on',x.dataset.var===VAR); x.onclick=()=>{ VAR=x.dataset.var; try{localStorage.setItem('ne-var8',VAR)}catch(e){} A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); $$('.fab-menu a[data-var]').forEach(y=>y.classList.toggle('on',y.dataset.var===VAR)); setTimeout(route,0); }; });
 $('#reset').onclick=()=>{ A={}; idx=0; booked=null; pick={day:0,slot:null}; save(); setTimeout(route,0); };
 addEventListener('hashchange',route);
 route();
