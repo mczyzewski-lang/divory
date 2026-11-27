@@ -415,6 +415,11 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .fchat .fsys.late,.fchat .fwho.late{animation:fmin .45s .2s both}
 .mpill{display:inline-block;border:1px solid var(--gold);background:rgba(214,165,76,.14);color:var(--gold);border-radius:999px;padding:1px 10px;font-weight:700;white-space:nowrap}
 .whyp strong{color:#fff}
+.dchk{display:grid;gap:8px;margin-top:12px}
+.dchk label{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;font-size:.95rem;line-height:1.35}
+.dchk input{width:22px;height:22px;margin:0;accent-color:var(--gold-2)}
+.dchk label:has(input:checked){border-color:var(--gold);background:var(--gold-soft)}
+.dchk-s{margin:12px 0 0;font-size:.9rem;color:var(--muted)}.dchk-s b{color:var(--ink)}
 .fork{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .fork>div{border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px;font-size:.88rem;color:var(--on-dark-muted)}
 .fork>div b{display:block;color:#fff;margin-bottom:4px}.fork>div.on{border-color:var(--gold);background:rgba(214,165,76,.12)}
@@ -1146,7 +1151,7 @@ const S=[
  {id:'sex',t:'Kim jesteś w tym małżeństwie?',o:[['f','Jestem żoną',0],['m','Jestem mężem',0]],why:'Żeby zwracać się do Ciebie właściwie i dopasować treść planu.'},
  {id:'stage',t:'Na jakim etapie jesteś?',o:[['decided','Jestem zdecydowany/a',6],['talked','Rozmawialiśmy już o rozwodzie',7],['considering','Rozważam, nadal się zastanawiam',1],['court','Sprawa jest już w sądzie',4]],why:'Od tego zależy, czy zaczniemy od mediacji, czy od spokojnego sprawdzenia możliwości.'},
  {id:'lean',if:a=>a.stage==='considering',t:'Co jest Ci dziś bliższe?',o:[['fix','Chcę jeszcze spróbować to naprawić',0],['talk','Nie wiem, potrzebuję z kimś o tym porozmawiać',0],['likely','Raczej się rozwiodę, ale chcę najpierw wiedzieć, co mnie czeka',2]],why:'Od tego zależy, co pokażemy Ci dalej. Żadna odpowiedź niczego nie uruchamia.'},
- {id:'r-lean',type:'r',if:()=>soft(),render:()=>['Nie będziemy Cię przekonywać do rozwodu.','<p style="margin-top:0">To nie jest nasza misja. Jeśli chcesz ratować małżeństwo albo upewnić się w decyzji, zacznij od rozmowy z psychologiem, a nie z prawnikiem.</p><div class="fork"><div class="on"><b>Upewniam się</b>Pierwszy Bezpieczny Krok: rozmowa z psychologiem, która pomaga uporządkować myśli.</div><div><b>Jestem zdecydowany/a</b>Plan Rozwodu i opiekun sprawy. Wrócisz tu, kiedy zechcesz.</div></div><p>Zadamy Ci jeszcze dwa krótkie pytania i pokażemy Twoją Mapę Decyzji.</p>']},
+ {id:'r-lean',type:'r',if:()=>soft(),render:()=>['Nie będziemy Cię przekonywać do rozwodu.','<p style="margin-top:0">To nie jest nasza misja. Jeśli chcesz ratować małżeństwo albo upewnić się w decyzji, zacznij od rozmowy z psychologiem, a nie z prawnikiem.</p><div class="fork"><div class="on"><b>Upewniam się</b>Pierwszy Bezpieczny Krok: rozmowa z psychologiem, która pomaga uporządkować myśli.</div><div><b>Jestem zdecydowany/a</b>Plan Rozwodu i opiekun sprawy. Wrócisz tu, kiedy zechcesz.</div></div><p>Zadamy Ci jeszcze dwa krótkie pytania i pokażemy Twoją Checklistę Decyzji.</p>']},
  {id:'hard',if:()=>soft(),t:'Co jest dziś dla Ciebie najtrudniejsze?',o:[['kids','Co będzie z dziećmi',0],['money','Pieniądze i mieszkanie',0],['alone','Strach przed tym, co potem',0],['talkp','Rozmowa z małżonkiem',0]],why:'Psycholog zacznie rozmowę od tego, co jest dla Ciebie najważniejsze.'},
  {id:'r-stage',type:'r',if:a=>a.stage==='considering'||a.stage==='court',render:a=>({
    decided:['Dobrze, że zaczynasz od planu.','Najczęstszy błąd to pozew złożony przed ustaleniami. Druga strona odpowiada na pozew, potem odpowiedź na odpowiedź, wnioski, zażalenia. Każde pismo to kolejne tygodnie i koszty.'],
@@ -1206,6 +1211,8 @@ function slotLabel(){ if(!A.gslot||A.gskip) return null; if(VAR==='d') return A.
 function gz(h){ const x=A.sex; if(x!=='f'&&x!=='m') return h; const f=x==='f';
   return h.replace(/orzekł o winie małżonka/g,f?'orzekł o winie męża':'orzekł o winie żony').replace(/Możliwe, że będzie tego chciała druga strona/g,f?'Możliwe, że będzie tego chciał mąż':'Możliwe, że będzie tego chciała żona').replace(/zdecydowany\/a/g,f?'zdecydowana':'zdecydowany').replace(/Sam\(a\)/g,f?'Sama':'Sam').replace(/sam\(a\)/g,f?'sama':'sam'); }
 function spw(){ return A.sex==='f'?' z mężem':A.sex==='m'?' z żoną':''; }
+const CHKQ=['Czy powiedziałem/am małżonkowi wprost, co jest nie tak?','Czy próbowaliśmy rozmowy z kimś trzecim (terapia, mediacja)?','Czy wiem, czego chcę, a nie tylko czego już nie chcę?','Czy ta myśl wraca od miesięcy, a nie tylko po kłótni?','Czy wiem, co stanie się z dziećmi, mieszkaniem i pieniędzmi w obu wariantach?','Czy mam z kim o tym porozmawiać poza rodziną?','Czy wiem, co musiałoby się zmienić, żebym chciał/a zostać?'];
+const cq=x=>A.sex==='f'?x.replace('powiedziałem/am','powiedziałam').replace('chciał/a','chciała'):A.sex==='m'?x.replace('powiedziałem/am','powiedziałem').replace('chciał/a','chciał'):x;
 function soft(){ return A.stage==='considering'&&(A.lean==='fix'||A.lean==='talk'); }
 ['r-stage','partner','r-partner','home','r-home','fault','r-fault','contact','r-contact','r-together','where','pri','e-cost','e-method','phone','slot','slotd','slotc','code','dname'].forEach(id=>{ const q=S.find(x=>x.id===id); if(q){ const f=q.if; q.if=a=>!soft()&&(!f||f(a)); } });
 const vis=()=>S.filter(q=>!q.if||q.if(A));
@@ -1308,7 +1315,7 @@ function renderQuiz(){
       </div><div class="veil">🔒 ${st===1?'Jeszcze dwa krótkie kroki':'Ostatni krok'}</div></div>`;
     const bl=t=>`<span class="blur">${t}</span>`;
     const prevF=`<table class="ftab"><tbody><tr class="sech"><td colspan="3">Plan wstępny</td></tr><tr><th>Ścieżka</th><td>${esc(p.name)}</td><td class="s ok">✓</td></tr><tr><th>Właściwy sąd</th><td>${bl(esc(c||'ustalimy w rozmowie'))}</td><td class="s">🔒</td></tr><tr><th>Opłata sądowa</th><td>${bl('600 zł, z czego część wraca')}</td><td class="s">🔒</td></tr><tr><th>Liczba rozpraw</th><td>${bl('zwykle jedna, do 60 minut')}</td><td class="s">🔒</td></tr><tr><th>Orientacyjny koszt</th><td>${bl('zwykle kilka tysięcy zł dla Was obojga')}</td><td class="s">🔒</td></tr><tr class="sech"><td colspan="3">Twoje kroki, po kolei</td></tr>${[1,2,3,4,5].map(k=>`<tr><th>Krok ${k}</th><td>${bl(['rozmowa z opiekunem planu','zaproszenie drugiej strony','mediacja online i ustalenia','pozew zgodny z ustaleniami','jedna rozprawa w sądzie'][k-1])}</td><td class="s">🔒</td></tr>`).join('')}<tr class="sech"><td colspan="3">Dokumenty do przygotowania (${P.docs.length})</td></tr>${P.docs.slice(0,4).map(x=>`<tr><td colspan="2">${bl(esc(x))}</td><td class="s">🔒</td></tr>`).join('')}<tr class="sech"><td colspan="3">Kwestie do ustalenia (${P.issues.length})</td></tr>${P.issues.map(x=>`<tr><td colspan="2">${bl(esc(x))}</td><td class="s">🔒</td></tr>`).join('')}</tbody></table>`;
-    const prevS=`<table class="ftab"><tbody><tr class="sech"><td colspan="3">Twoja Mapa Decyzji</td></tr><tr><th>Gdzie jesteś</th><td>${A.lean==='fix'?'chcesz jeszcze spróbować to naprawić':'potrzebujesz z kimś o tym porozmawiać'}</td><td class="s ok">✓</td></tr>${['Twoje trzy drogi','Co oznacza każda z nich','Od czego zacząć rozmowę w domu','Pierwszy Bezpieczny Krok','Co, jeśli jednak rozwód'].map(x=>`<tr><th>${x}</th><td>${bl('opis przygotowany na podstawie odpowiedzi')}</td><td class="s">🔒</td></tr>`).join('')}</tbody></table>`;
+    const prevS=`<table class="ftab"><tbody><tr class="sech"><td colspan="3">Twoja Checklista Decyzji · 7 pytań</td></tr>${CHKQ.map((x,k)=>`<tr><th>${k+1}</th><td>${k===0?cq(x):bl(x)}</td><td class="s">${k===0?'☐':'🔒'}</td></tr>`).join('')}</tbody></table>`;
     const steps=gsteps(st);
     const VC=VAR==='c'; const GN=3, sl=VAR!=='a'?slotLabel():null;
     const VD=VAR==='d'; const VE=VAR==='e'; const VF=VAR==='f'||VAR==='g'||VAR==='h'; const stepno=VE?3:VF?1:VD?({email:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
@@ -1331,7 +1338,7 @@ function renderQuiz(){
 </label></div>
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">Zapisz moje preferencje →</button>
         <p style="margin:8px 0 0;text-align:center"><button class="linkbtn" id="dback" type="button">zmień termin</button></p>`
-      :q.type==='email'?`${dotsE}<h2>${soft()?'Twoja Mapa Decyzji jest gotowa. Gdzie ją wysłać?':VAR==='h'?'Twój plan jest gotowy. Gdzie go wysłać?':(VE||VF)?'Odbierz swój wstępny Plan Rozwodu':'Odbierz i zobacz swój Plan Rozwodu'}</h2>
+      :q.type==='email'?`${dotsE}<h2>${soft()?'Twoja Checklista Decyzji jest gotowa. Gdzie ją wysłać?':VAR==='h'?'Twój plan jest gotowy. Gdzie go wysłać?':(VE||VF)?'Odbierz swój wstępny Plan Rozwodu':'Odbierz i zobacz swój Plan Rozwodu'}</h2>
         <div style="display:grid;gap:12px;margin-top:14px">
           <label class="f">Imię<input type="text" id="nm" name="given-name" autocomplete="given-name" autocapitalize="words" placeholder="Jak mamy się zwracać?" value="${esc(A.name||'')}"></label>
           <label class="f">E-mail<input type="email" id="em" name="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="twoj@email.pl" value="${esc(A.email||'')}"><small class="hint">Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.</small></label>
@@ -1375,7 +1382,7 @@ function renderQuiz(){
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">${sl?'Potwierdzam termin i zobacz plan →':'Zobacz mój plan →'}</button>
         <p class="note" style="margin-top:10px">Kod nie doszedł? <button class="linkbtn" id="resend" type="button" style="padding:0">Wyślij ponownie</button><span id="resend-msg"></span></p>
         <p class="note" style="margin-top:4px">W prototypie zadziała dowolne 4 cyfry.</p>`;
-    h=`<div class="gate${inGate?'':' first'}"><div class="gate-bg" aria-hidden="true"><span class="eyebrow" style="color:var(--gold-2)">${soft()?'Twoja Mapa Decyzji jest gotowa':'Twój plan jest gotowy'}</span><h2 style="margin-top:6px">${soft()?'Pierwszy Bezpieczny Krok':esc(p.name)}</h2>${soft()?prevS:VF?prevF:prev}</div>
+    h=`<div class="gate${inGate?'':' first'}"><div class="gate-bg" aria-hidden="true"><span class="eyebrow" style="color:var(--gold-2)">${soft()?'Twoja Checklista Decyzji jest gotowa':'Twój plan jest gotowy'}</span><h2 style="margin-top:6px">${soft()?'7 pytań, zanim zdecydujesz':esc(p.name)}</h2>${soft()?prevS:VF?prevF:prev}</div>
       <div class="gate-dim" aria-hidden="true"></div>
       <div class="gate-card${ganim}">${inner}</div></div>`;
   } else if(q.type==='code'){
@@ -1412,7 +1419,7 @@ function renderQuiz(){
       ${q.id==='contact'&&A.contact==='unsafe'?'<div class="alert"><b>Twoje bezpieczeństwo jest najważniejsze.</b> Nie zaproponujemy mediacji i nie skontaktujemy się z drugą stroną bez Twojej zgody. Niebieska Linia: <b>800 120 002</b>, w zagrożeniu życia <b>112</b>.</div>':''}
       <div class="qnav">${q.multi?'<button class="btn btn-gold" id="next" type="button">Dalej →</button>':''}<button class="linkbtn" id="back" type="button">Wstecz</button></div>`;
   }
-  if(soft()) h=h.replace('Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.','Na ten adres wyślemy Twoją Mapę Decyzji.').replace('Odbierz plan →','Odbierz mapę →').replace('Zobacz mój plan →','Odbierz mapę →').replace('>Dalej →</button>\n        <div class="trustrow">','>Odbierz mapę →</button>\n        <div class="trustrow">');
+  if(soft()) h=h.replace('Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.','Na ten adres wyślemy Twoją Checklistę Decyzji.').replace('Odbierz plan →','Odbierz checklistę →').replace('Zobacz mój plan →','Odbierz checklistę →').replace('>Dalej →</button>\n        <div class="trustrow">','>Odbierz checklistę →</button>\n        <div class="trustrow">');
   card.innerHTML=gz(h); gateDim();
   $('#hplan').innerHTML=['email','dname','slot','phone','code','call'].includes(q.type)?'':`Twój plan ${done}/5<i><em style="width:${done*20}%"></em></i>`;
   // zdarzenia
@@ -1470,7 +1477,7 @@ function animOut(d,fn){ const el=$('#qcard .gate-card')||$('#qcard'); if(!el||ma
 function next(){ if(busy) return; const v=vis();
   if(idx<v.length-1){ busy=true; const nt=v[idx+1].type, ct=v[idx].type;
     animOut('f',()=>{
-      if(['email','dname'].includes(nt)&&!['email','dname'].includes(ct)){ const c=$('#qcard'); c.className='qcard fade'; c.innerHTML='<div class="prep"><i class="spin"></i><b>'+(soft()?'Przygotowuję Twoją Mapę Decyzji…':'Przygotowuję Twój Plan Rozwodu…')+'</b></div>'; $('#bar').style.width='100%'; window.scrollTo(0,0);
+      if(['email','dname'].includes(nt)&&!['email','dname'].includes(ct)){ const c=$('#qcard'); c.className='qcard fade'; c.innerHTML='<div class="prep"><i class="spin"></i><b>'+(soft()?'Przygotowuję Twoją Checklistę Decyzji…':'Przygotowuję Twój Plan Rozwodu…')+'</b></div>'; $('#bar').style.width='100%'; window.scrollTo(0,0);
         setTimeout(()=>{ busy=false; idx++; dir='z'; save(); renderQuiz(); window.scrollTo(0,0); },900); }
       else if(VAR==='d'&&nt==='slot'&&$('#qcard .gate-card')){ const g=$('#qcard .gate-card'); g.className='gate-card fade';
         g.innerHTML='<div class="dload"><div class="dl act"><i></i><span>Dobieram opiekuna specjalizującego się w rozwodach <mark>'+(A.kids==='yes'?'małżeństw, które mają dzieci':'małżeństw bez małoletnich dzieci')+'</mark></span></div><div class="dl"><i></i><span>Sprawdzam wolne terminy w kalendarzu…</span></div><div class="dl"><i></i><span>Twój Plan jest w przygotowaniu</span></div></div>';
@@ -1636,10 +1643,10 @@ function renderSoft(){
   document.body.classList.remove('fchatmode'); const nm=A.name?esc(A.name):''; const dd=days();
   const ways=[['fix','Naprawiamy','Rozmowa z psychologiem pokaże, czy i jak da się to jeszcze poukładać.'],['talk','Upewniam się','Porządkujesz myśli z kimś, kto nie ma interesu w żadnej decyzji.'],['div','Rozwód','Jeśli po rozmowie uznasz, że to ta droga, pokażemy Ci Plan Rozwodu. Bez pośpiechu.']];
   $('#res').innerHTML=gz(`<div class="fwrap" style="padding:8px 0 30px">
-    <span class="eyebrow" style="color:var(--gold-2)">Twoja Mapa Decyzji</span>
+    <span class="eyebrow" style="color:var(--gold-2)">Twoja Checklista Decyzji</span>
     <h1 style="margin-top:6px;font-size:1.8rem">${nm?nm+', n':'N'}ie musisz dziś decydować o rozwodzie.</h1>
     <p style="margin-top:8px;color:var(--muted)">Naszą misją nie jest przekonywanie Cię do rozwodu. Najpierw warto wiedzieć, czego naprawdę chcesz.</p>
-    <div class="card" style="margin-top:16px"><h2 class="hh" style="font-size:1.2rem">Twoje trzy drogi</h2><ol class="ftl" style="margin-top:14px">${ways.map(w=>`<li class="${w[0]===A.lean?'now':''}"><b>${w[1]}${w[0]===A.lean?' · tu jesteś':''}</b><span>${w[2]}</span></li>`).join('')}</ol></div>
+    <div class="card" style="margin-top:16px"><h2 class="hh" style="font-size:1.2rem">7 pytań, zanim zdecydujesz</h2><p class="note" style="margin-top:4px">Zaznacz te, na które znasz już odpowiedź. Nikt poza Tobą tego nie widzi.</p><div class="dchk">${CHKQ.map((x,k)=>`<label><input type="checkbox" data-dchk="${k}"${(A.chk||[]).includes(k)?' checked':''}><span>${cq(x)}</span></label>`).join('')}</div><p class="dchk-s" id="dchk-s"></p></div>
     <div class="card" style="margin-top:16px;border-color:var(--gold)">
       <span class="eyebrow" style="color:var(--gold-2)">Polecamy · Pierwszy Bezpieczny Krok</span>
       <div class="who" style="margin-top:10px"><span class="av" style="width:56px;height:56px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:1.4rem">👤</span><div><b>[Imię i nazwisko psychologa]</b><br><span class="note">psycholog, terapia małżeństw · <b>duo.pl</b></span></div></div>
@@ -1651,6 +1658,8 @@ function renderSoft(){
     <div class="card" style="margin-top:16px"><b>Gdy nie masz jeszcze pewności</b><p class="note" style="margin-top:4px">Nasi klienci o tym, jak podejmowali decyzję (0:36).</p><button type="button" class="tv" id="s-tv" style="width:100%;max-width:320px;margin-top:10px"><img src="${IMG_K}" alt=""><i>▶</i><em>0:36</em><span><b>„Ja nie namawiam nikogo do rozwodu. Ja namawiam do zdecydowania.”</b>Paweł</span></button><span class="note" id="s-tvmsg" style="display:block;margin-top:6px"></span></div>
     <p style="margin-top:18px;text-align:center"><button class="linkbtn" id="s-div" type="button">Jednak chcę zobaczyć Plan Rozwodu →</button></p>
   </div>`);
+  const dsum=()=>{ const n=(A.chk||[]).length, e=$('#dchk-s'); e.innerHTML=n===7?'<b>Znasz odpowiedź na wszystkie 7 pytań.</b> Jeśli decyzja jest podjęta, zobacz Plan Rozwodu poniżej.':'<b>'+n+' z 7.</b> '+(n?'Pytania bez odpowiedzi':'Te pytania')+' to dobry początek rozmowy z psychologiem.'; };
+  $$('[data-dchk]').forEach(c=>c.onchange=()=>{ const k=+c.dataset.dchk; A.chk=(A.chk||[]).filter(x=>x!==k); if(c.checked) A.chk.push(k); save(); dsum(); }); dsum();
   $$('[data-sslot]').forEach(b=>b.onclick=()=>{ $$('[data-sslot]').forEach(x=>x.classList.toggle('on',x===b)); $('#s-buy').disabled=false; });
   $('#s-buy').onclick=()=>{ $('#s-msg').textContent='W produkcie: przejście do płatności 470 zł na duo.pl i potwierdzenie terminu e-mailem.'; };
   $('#s-tv').onclick=()=>playT(TA[6],0,'Gdy nie masz jeszcze pewności');
