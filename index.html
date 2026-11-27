@@ -1937,6 +1937,9 @@ function playT(id,end,title){ const o=document.createElement('div'); o.className
   const cl=()=>{ o.remove(); document.removeEventListener('keydown',k); }, k=e=>{ if(e.key==='Escape') cl(); };
   o.onclick=e=>{ if(e.target===o||e.target.closest('.tvo-x')) cl(); }; document.addEventListener('keydown',k); document.body.appendChild(o); o.querySelector('.tvo-x').focus(); }
 $$('[data-lpv]').forEach(b=>b.onclick=()=>playT(TA[+b.dataset.lpv],1,b.getAttribute('aria-label')));
+const kbFix=()=>{ const e=document.activeElement; if(!e||!e.matches||!e.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea')) return; const r=e.getBoundingClientRect(), vv=window.visualViewport, h=vv?vv.height:innerHeight, top=vv?vv.offsetTop:0; if(r.bottom>top+h-90||r.top<top+70) e.scrollIntoView({block:'center',behavior:'smooth'}); };
+document.addEventListener('focusin',()=>{ setTimeout(kbFix,350); setTimeout(kbFix,800); });
+if(window.visualViewport) window.visualViewport.addEventListener('resize',()=>setTimeout(kbFix,60));
 const playK=()=>{ const f=$('#play').closest('.kv2'); if(f.classList.contains('playing')) return; const old=f.innerHTML; f.classList.add('playing');
   f.innerHTML='<vturb-smartplayer id="vid-6ad75b857a9a0eba49cd5729" style="display:block;margin:0 auto;width:100%"><div class="vturb-player-placeholder" style="position:relative;width:100%;padding:100% 0 0;z-index:0;background-color:black"></div></vturb-smartplayer>';
   const sc=document.createElement('script'); sc.async=true; sc.src='https://scripts.converteai.net/409713a3-9e6d-47d3-b882-7a3b89f1ce3b/players/6ad75b857a9a0eba49cd5729/v4/player.js';
