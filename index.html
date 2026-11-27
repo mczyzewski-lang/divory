@@ -415,6 +415,17 @@ body.fchatmode[data-v=wynik] .fab{top:auto!important;bottom:12px!important;right
 .fchat .fsys.late,.fchat .fwho.late{animation:fmin .45s .2s both}
 .mpill{display:inline-block;border:1px solid var(--gold);background:rgba(214,165,76,.14);color:var(--gold);border-radius:999px;padding:1px 10px;font-weight:700;white-space:nowrap}
 .whyp strong{color:#fff}
+.ssent{margin:0;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:.9rem;overflow-wrap:anywhere}
+.sprice{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-top:14px}.sprice s{color:var(--muted);font-size:1.1rem}.sprice b{font-family:var(--f-display);font-size:1.9rem;font-weight:400}.sprice em{font-style:normal;font-weight:700;font-size:.8rem;background:var(--gold);color:var(--gold-ink);border-radius:999px;padding:3px 9px}
+.stimer{margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--gold-soft);border:1px solid var(--gold);font-size:.92rem}.stimer b{font-variant-numeric:tabular-nums;font-size:1.05rem}
+.swhy{margin-top:8px;font-size:.88rem}.swhy summary{cursor:pointer;color:var(--gold-2);font-weight:700;text-decoration:underline}.swhy p{margin:8px 0 0;color:var(--muted)}
+.sdrv{display:grid;gap:18px;margin-top:14px}
+.sdrv label{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:end}
+.sdrv label b{display:block;font-size:.98rem;line-height:1.3}.sdrv label small{display:block;font-size:.8rem;color:var(--muted)}
+.sdrv output{font-family:var(--f-display);font-size:1.3rem;min-width:28px;text-align:right}
+.sdrv input{grid-column:1/-1;width:100%;height:28px;margin:0;accent-color:var(--gold-2)}
+.sdrv i{grid-column:1/-1;display:flex;justify-content:space-between;font-style:normal}.sdrv i em{font-style:normal;font-size:.72rem;color:var(--muted)}
+.sres{margin-top:16px;font-size:.93rem;line-height:1.45}.sres:empty{display:none}.sres b{display:block;margin-bottom:4px}.sres small{display:block;margin-top:6px;color:var(--muted);font-size:.78rem}
 .dchk{display:grid;gap:8px;margin-top:12px}
 .dchk label{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;font-size:.95rem;line-height:1.35}
 .dchk input{width:22px;height:22px;margin:0;accent-color:var(--gold-2)}
@@ -1213,6 +1224,8 @@ function gz(h){ const x=A.sex; if(x!=='f'&&x!=='m') return h; const f=x==='f';
 function spw(){ return A.sex==='f'?' z mężem':A.sex==='m'?' z żoną':''; }
 const CHKQ=['Czy powiedziałem/am małżonkowi wprost, co jest nie tak?','Czy próbowaliśmy rozmowy z kimś trzecim (terapia, mediacja)?','Czy wiem, czego chcę, a nie tylko czego już nie chcę?','Czy ta myśl wraca od miesięcy, a nie tylko po kłótni?','Czy wiem, co stanie się z dziećmi, mieszkaniem i pieniędzmi w obu wariantach?','Czy mam z kim o tym porozmawiać poza rodziną?','Czy wiem, co musiałoby się zmienić, żebym chciał/a zostać?'];
 const cq=x=>A.sex==='f'?x.replace('powiedziałem/am','powiedziałam').replace('chciał/a','chciała'):A.sex==='m'?x.replace('powiedziałem/am','powiedziałem').replace('chciał/a','chciał'):x;
+const DRV=[['out','Nie chcę już w tym być',''],['fear','Boję się tego, co będzie potem','pieniądze, mieszkanie, samotność'],['kids','Martwię się o dzieci',''],['care','Wciąż mi zależy na tej osobie',''],['react','Boję się reakcji małżonka albo rodziny',''],['tired','Mam dość ciągłego wahania','']];
+const SP=670, SD=536, SMIN=15;
 function soft(){ return A.stage==='considering'&&(A.lean==='fix'||A.lean==='talk'); }
 ['r-stage','partner','r-partner','home','r-home','fault','r-fault','contact','r-contact','r-together','where','pri','e-cost','e-method','phone','slot','slotd','slotc','code','dname'].forEach(id=>{ const q=S.find(x=>x.id===id); if(q){ const f=q.if; q.if=a=>!soft()&&(!f||f(a)); } });
 const vis=()=>S.filter(q=>!q.if||q.if(A));
@@ -1315,7 +1328,7 @@ function renderQuiz(){
       </div><div class="veil">🔒 ${st===1?'Jeszcze dwa krótkie kroki':'Ostatni krok'}</div></div>`;
     const bl=t=>`<span class="blur">${t}</span>`;
     const prevF=`<table class="ftab"><tbody><tr class="sech"><td colspan="3">Plan wstępny</td></tr><tr><th>Ścieżka</th><td>${esc(p.name)}</td><td class="s ok">✓</td></tr><tr><th>Właściwy sąd</th><td>${bl(esc(c||'ustalimy w rozmowie'))}</td><td class="s">🔒</td></tr><tr><th>Opłata sądowa</th><td>${bl('600 zł, z czego część wraca')}</td><td class="s">🔒</td></tr><tr><th>Liczba rozpraw</th><td>${bl('zwykle jedna, do 60 minut')}</td><td class="s">🔒</td></tr><tr><th>Orientacyjny koszt</th><td>${bl('zwykle kilka tysięcy zł dla Was obojga')}</td><td class="s">🔒</td></tr><tr class="sech"><td colspan="3">Twoje kroki, po kolei</td></tr>${[1,2,3,4,5].map(k=>`<tr><th>Krok ${k}</th><td>${bl(['rozmowa z opiekunem planu','zaproszenie drugiej strony','mediacja online i ustalenia','pozew zgodny z ustaleniami','jedna rozprawa w sądzie'][k-1])}</td><td class="s">🔒</td></tr>`).join('')}<tr class="sech"><td colspan="3">Dokumenty do przygotowania (${P.docs.length})</td></tr>${P.docs.slice(0,4).map(x=>`<tr><td colspan="2">${bl(esc(x))}</td><td class="s">🔒</td></tr>`).join('')}<tr class="sech"><td colspan="3">Kwestie do ustalenia (${P.issues.length})</td></tr>${P.issues.map(x=>`<tr><td colspan="2">${bl(esc(x))}</td><td class="s">🔒</td></tr>`).join('')}</tbody></table>`;
-    const prevS=`<table class="ftab"><tbody><tr class="sech"><td colspan="3">Twoja Checklista Decyzji · 7 pytań</td></tr>${CHKQ.map((x,k)=>`<tr><th>${k+1}</th><td>${k===0?cq(x):bl(x)}</td><td class="s">${k===0?'☐':'🔒'}</td></tr>`).join('')}</tbody></table>`;
+    const prevS=`<table class="ftab"><tbody><tr class="sech"><td colspan="3">Twoja Checklista Decyzji · co Tobą kieruje</td></tr>${DRV.filter(d=>d[0]!=='kids'||A.kids==='yes').map((d,k)=>`<tr><th>${k+1}</th><td>${k===0?d[1]:bl(d[1])}</td><td class="s">${k===0?'◐':'🔒'}</td></tr>`).join('')}</tbody></table>`;
     const steps=gsteps(st);
     const VC=VAR==='c'; const GN=3, sl=VAR!=='a'?slotLabel():null;
     const VD=VAR==='d'; const VE=VAR==='e'; const VF=VAR==='f'||VAR==='g'||VAR==='h'; const stepno=VE?3:VF?1:VD?({email:1,slot:2,phone:3})[q.type]:VAR==='c'?({email:1,phone:2,slot:3})[q.type]:VAR==='b'?({email:1,slot:2,phone:3})[q.type]:(q.type==='email'?1:q.type==='phone'?2:3);
@@ -1382,7 +1395,7 @@ function renderQuiz(){
         <button class="btn btn-gold" id="next" type="button" style="width:100%;margin-top:14px">${sl?'Potwierdzam termin i zobacz plan →':'Zobacz mój plan →'}</button>
         <p class="note" style="margin-top:10px">Kod nie doszedł? <button class="linkbtn" id="resend" type="button" style="padding:0">Wyślij ponownie</button><span id="resend-msg"></span></p>
         <p class="note" style="margin-top:4px">W prototypie zadziała dowolne 4 cyfry.</p>`;
-    h=`<div class="gate${inGate?'':' first'}"><div class="gate-bg" aria-hidden="true"><span class="eyebrow" style="color:var(--gold-2)">${soft()?'Twoja Checklista Decyzji jest gotowa':'Twój plan jest gotowy'}</span><h2 style="margin-top:6px">${soft()?'7 pytań, zanim zdecydujesz':esc(p.name)}</h2>${soft()?prevS:VF?prevF:prev}</div>
+    h=`<div class="gate${inGate?'':' first'}"><div class="gate-bg" aria-hidden="true"><span class="eyebrow" style="color:var(--gold-2)">${soft()?'Twoja Checklista Decyzji jest gotowa':'Twój plan jest gotowy'}</span><h2 style="margin-top:6px">${soft()?'Co Tobą dziś kieruje?':esc(p.name)}</h2>${soft()?prevS:VF?prevF:prev}</div>
       <div class="gate-dim" aria-hidden="true"></div>
       <div class="gate-card${ganim}">${inner}</div></div>`;
   } else if(q.type==='code'){
@@ -1419,7 +1432,7 @@ function renderQuiz(){
       ${q.id==='contact'&&A.contact==='unsafe'?'<div class="alert"><b>Twoje bezpieczeństwo jest najważniejsze.</b> Nie zaproponujemy mediacji i nie skontaktujemy się z drugą stroną bez Twojej zgody. Niebieska Linia: <b>800 120 002</b>, w zagrożeniu życia <b>112</b>.</div>':''}
       <div class="qnav">${q.multi?'<button class="btn btn-gold" id="next" type="button">Dalej →</button>':''}<button class="linkbtn" id="back" type="button">Wstecz</button></div>`;
   }
-  if(soft()) h=h.replace('Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.','Na ten adres wyślemy Twoją Checklistę Decyzji.').replace('Odbierz plan →','Odbierz checklistę →').replace('Zobacz mój plan →','Odbierz checklistę →').replace('>Dalej →</button>\n        <div class="trustrow">','>Odbierz checklistę →</button>\n        <div class="trustrow">');
+  if(soft()) h=h.replace('Na ten adres wyślemy Plan Rozwodu i 7 krótkich filmów Kamila Jury.','Na ten adres wyślemy link do Twojej Checklisty Decyzji.').replace('Odbierz plan →','Odbierz checklistę →').replace('Zobacz mój plan →','Odbierz checklistę →').replace('>Dalej →</button>\n        <div class="trustrow">','>Odbierz checklistę →</button>\n        <div class="trustrow">');
   card.innerHTML=gz(h); gateDim();
   $('#hplan').innerHTML=['email','dname','slot','phone','code','call'].includes(q.type)?'':`Twój plan ${done}/5<i><em style="width:${done*20}%"></em></i>`;
   // zdarzenia
@@ -1640,30 +1653,56 @@ function fseq(nodes){ if(!nodes.length||matchMedia('(prefers-reduced-motion:redu
       if(n.classList.contains('fm')){ const t=document.createElement('div'); t.className='ftyp'; t.innerHTML='<i></i><i></i><i></i>'; n.before(t); t.scrollIntoView({behavior:'smooth',block:'nearest'}); await wait(650); t.remove(); if(id!==fseqId) return; }
       n.classList.remove('hid'); n.classList.add('in'); n.scrollIntoView({behavior:'smooth',block:'nearest'}); await wait(n.classList.contains('fm')?480:160); } })(); }
 function renderSoft(){
-  document.body.classList.remove('fchatmode'); const nm=A.name?esc(A.name):''; const dd=days();
-  const ways=[['fix','Naprawiamy','Rozmowa z psychologiem pokaże, czy i jak da się to jeszcze poukładać.'],['talk','Upewniam się','Porządkujesz myśli z kimś, kto nie ma interesu w żadnej decyzji.'],['div','Rozwód','Jeśli po rozmowie uznasz, że to ta droga, pokażemy Ci Plan Rozwodu. Bez pośpiechu.']];
-  $('#res').innerHTML=gz(`<div class="fwrap" style="padding:8px 0 30px">
+  document.body.classList.remove('fchatmode'); clearInterval(window._sti); const nm=A.name?esc(A.name):''; const dd=days();
+  if(!A.softT){ A.softT=Date.now()+SMIN*60000; A.sv='offer'; save(); }
+  const left=()=>Math.max(0,A.softT-Date.now()), act=()=>left()>0, mmss=()=>{ const t=Math.ceil(left()/1000); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); };
+  const on=act(), pr=on?SD:SP, view=A.sv==='list'?'list':'offer';
+  const drv=DRV.filter(d=>d[0]!=='kids'||A.kids==='yes'); A.drv=A.drv||{};
+  const hardT=A.hard?({kids:'co będzie z dziećmi',money:'pieniądze i mieszkanie',alone:'strach przed tym, co potem',talkp:'rozmowa z małżonkiem'})[A.hard]:'';
+  const why=`<details class="swhy"><summary>Zobacz, dlaczego motywujemy Cię czasem</summary><p>Bo wiemy, jak to zwykle wygląda. Zamkniesz tę stronę, wrócisz do codziennych spraw, a ta myśl i tak wróci: za tydzień, za miesiąc, po kolejnej kłótni. Odkładanie niczego nie porządkuje.</p><p>Teraz masz to przed oczami, więc to najlepszy moment na pierwszy krok. Niższa cena ma Ci w tym pomóc i robimy to w Twoim interesie.</p><p>Jeśli wolisz się zastanowić, to w porządku. Checklista zostaje u Ciebie, a sesję zarezerwujesz później w zwykłej cenie ${SP} zł.</p></details>`;
+  const offer=`<div class="card" style="margin-top:16px;border-color:var(--gold)" id="s-offer">
+      <span class="eyebrow" style="color:var(--gold-2)">Pierwszy Bezpieczny Krok</span>
+      <h2 style="margin-top:8px;font-size:1.4rem">Sesja porządkująca z psychologiem</h2>
+      <div class="who" style="margin-top:12px"><span class="av" style="width:56px;height:56px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:1.4rem">👤</span><div><b>[Imię i nazwisko psychologa]</b><br><span class="note">psycholog, terapia małżeństw · <b>duo.pl</b></span></div></div>
+      <ul class="chk-list"><li>Rozmawiasz z psychologiem, a nie z prawnikiem. Nikt nie namawia Cię do rozwodu ani do zostania.</li><li>Zaczynacie od tego, co jest dla Ciebie najtrudniejsze${hardT?': '+hardT:''}.</li><li>Wychodzisz z jasnością, co chcesz zrobić dalej i od czego zacząć.</li><li>Rozmowa jest poufna i odbywa się online.</li></ul>
+      <div class="sprice">${on?`<s>${SP} zł</s><b>${SD} zł</b><em>−20%</em>`:`<b>${SP} zł</b>`}<span class="note">za sesję · płatność online</span></div>
+      ${on?`<div class="stimer" role="timer">Cena ${SD} zł ważna jeszcze <b id="s-tm">${mmss()}</b></div>${why}`:''}
+      <div class="duo"><div class="duo-h"><b>duo.pl</b><span>rezerwację i płatność prowadzi duo.pl</span></div><div class="duo-b"><p class="bk-q" style="margin-top:0">Wybierz termin sesji:</p><div class="grow"><select id="s-day" aria-label="Dzień">${dd.slice(0,2).map((x,i)=>`<option value="${i}">${i===0?'Dziś':'Jutro'}, ${x.getDate()}.${String(x.getMonth()+1).padStart(2,'0')}</option>`).join('')}</select><div class="slots gsl">${SL[1].map(x=>`<button type="button" data-sslot="${x}">${x}</button>`).join('')}</div></div><button class="btn btn-gold" id="s-buy" type="button" style="width:100%;margin-top:12px" disabled>Rezerwuję i płacę ${pr} zł</button><p class="note" id="s-msg" style="margin-top:8px">W produkcie w tym miejscu jest osadzona strona rezerwacji duo.pl.</p></div></div>
+    </div>`;
+  const pOffer=`<div class="fwrap" style="padding:8px 0 30px">
+    <p class="ssent">✓ Link do Twojej Checklisty Decyzji wysłaliśmy na ${A.email?'<b>'+esc(A.email)+'</b>':'Twój e-mail'}.</p>
+    <h1 style="margin-top:12px;font-size:1.8rem">${nm?nm+', t':'T'}a myśl będzie wracać.</h1>
+    <p style="margin-top:8px;color:var(--muted)">Skoro tu jesteś, myślisz o rozwodzie nie pierwszy raz. Checklista pomoże Ci nazwać, co Tobą kieruje. Uporządkować to najłatwiej w rozmowie z kimś, kto nie ma interesu w żadnej decyzji.</p>
+    ${offer}
+    <p style="margin-top:18px;text-align:center"><button class="linkbtn" id="s-skip" type="button">Nie teraz, przejdź do checklisty →</button></p>
+  </div>`;
+  const pList=`<div class="fwrap" style="padding:8px 0 30px">
     <span class="eyebrow" style="color:var(--gold-2)">Twoja Checklista Decyzji</span>
-    <h1 style="margin-top:6px;font-size:1.8rem">${nm?nm+', n':'N'}ie musisz dziś decydować o rozwodzie.</h1>
-    <p style="margin-top:8px;color:var(--muted)">Naszą misją nie jest przekonywanie Cię do rozwodu. Najpierw warto wiedzieć, czego naprawdę chcesz.</p>
-    <div class="card" style="margin-top:16px"><h2 class="hh" style="font-size:1.2rem">7 pytań, zanim zdecydujesz</h2><p class="note" style="margin-top:4px">Zaznacz te, na które znasz już odpowiedź. Nikt poza Tobą tego nie widzi.</p><div class="dchk">${CHKQ.map((x,k)=>`<label><input type="checkbox" data-dchk="${k}"${(A.chk||[]).includes(k)?' checked':''}><span>${cq(x)}</span></label>`).join('')}</div><p class="dchk-s" id="dchk-s"></p></div>
-    <div class="card" style="margin-top:16px;border-color:var(--gold)">
-      <span class="eyebrow" style="color:var(--gold-2)">Polecamy · Pierwszy Bezpieczny Krok</span>
-      <div class="who" style="margin-top:10px"><span class="av" style="width:56px;height:56px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:1.4rem">👤</span><div><b>[Imię i nazwisko psychologa]</b><br><span class="note">psycholog, terapia małżeństw · <b>duo.pl</b></span></div></div>
-      <h2 style="margin-top:14px;font-size:1.3rem">Jedna rozmowa, która porządkuje myśli.</h2>
-      <ul class="chk-list"><li>Rozmawiasz z psychologiem, a nie z prawnikiem. Nikt nie namawia Cię do rozwodu ani do zostania.</li><li>Zaczynacie od tego, co jest dla Ciebie najtrudniejsze${A.hard?': '+({kids:'co będzie z dziećmi',money:'pieniądze i mieszkanie',alone:'strach przed tym, co potem',talkp:'rozmowa z małżonkiem'})[A.hard]:''}.</li><li>Wychodzisz z jasnością, co chcesz zrobić dalej i od czego zacząć.</li><li>Rozmowa jest poufna i odbywa się online.</li></ul>
-      <p style="margin-top:12px"><b style="font-family:var(--f-display);font-size:1.6rem;font-weight:400">470 zł</b> <span class="note">za rozmowę · płatność online</span></p>
-      <div class="duo"><div class="duo-h"><b>duo.pl</b><span>rezerwację i płatność prowadzi duo.pl</span></div><div class="duo-b"><p class="bk-q" style="margin-top:0">Wybierz termin rozmowy z psychologiem:</p><div class="grow"><select id="s-day" aria-label="Dzień">${dd.slice(0,2).map((x,i)=>`<option value="${i}">${i===0?'Dziś':'Jutro'}, ${x.getDate()}.${String(x.getMonth()+1).padStart(2,'0')}</option>`).join('')}</select><div class="slots gsl">${SL[1].map(x=>`<button type="button" data-sslot="${x}">${x}</button>`).join('')}</div></div><button class="btn btn-gold" id="s-buy" type="button" style="width:100%;margin-top:12px" disabled>Rezerwuję i płacę 470 zł</button><p class="note" id="s-msg" style="margin-top:8px">W produkcie w tym miejscu jest osadzona strona rezerwacji duo.pl.</p></div></div>
-    </div>
-    <div class="card" style="margin-top:16px"><b>Gdy nie masz jeszcze pewności</b><p class="note" style="margin-top:4px">Nasi klienci o tym, jak podejmowali decyzję (0:36).</p><button type="button" class="tv" id="s-tv" style="width:100%;max-width:320px;margin-top:10px"><img src="${IMG_K}" alt=""><i>▶</i><em>0:36</em><span><b>„Ja nie namawiam nikogo do rozwodu. Ja namawiam do zdecydowania.”</b>Paweł</span></button><span class="note" id="s-tvmsg" style="display:block;margin-top:6px"></span></div>
+    <h1 style="margin-top:6px;font-size:1.8rem">${nm?nm+', c':'C'}o Tobą dziś kieruje?</h1>
+    <p style="margin-top:8px;color:var(--muted)">Nie musisz dziś decydować o rozwodzie. Najpierw warto zobaczyć, co tak naprawdę Cię zatrzymuje, a co popycha.</p>
+    <div class="card" style="margin-top:16px"><p class="note" style="margin:0">Przesuń każdy suwak tak, jak czujesz to dziś. Nikt poza Tobą tego nie widzi.</p><div class="sdrv">${drv.map(d=>`<label><span><b>${d[1]}</b>${d[2]?`<small>${d[2]}</small>`:''}</span><output id="o-${d[0]}">${A.drv[d[0]]==null?'–':A.drv[d[0]]}</output><input type="range" min="0" max="10" step="1" value="${A.drv[d[0]]==null?5:A.drv[d[0]]}" data-drv="${d[0]}" aria-label="${d[1]}"><i><em>wcale</em><em>bardzo mocno</em></i></label>`).join('')}</div><div class="sres" id="s-res"></div></div>
+    ${offer}
+    <div class="card" style="margin-top:16px"><b>Gdy nie masz jeszcze pewności</b><p class="note" style="margin-top:4px">Nasi klienci o tym, jak podejmowali decyzję (0:36).</p><button type="button" class="tv" id="s-tv" style="width:100%;max-width:320px;margin-top:10px"><img src="${IMG_K}" alt=""><i>▶</i><em>0:36</em><span><b>„Ja nie namawiam nikogo do rozwodu. Ja namawiam do zdecydowania.”</b>Paweł</span></button></div>
     <p style="margin-top:18px;text-align:center"><button class="linkbtn" id="s-div" type="button">Jednak chcę zobaczyć Plan Rozwodu →</button></p>
-  </div>`);
-  const dsum=()=>{ const n=(A.chk||[]).length, e=$('#dchk-s'); e.innerHTML=n===7?'<b>Znasz odpowiedź na wszystkie 7 pytań.</b> Jeśli decyzja jest podjęta, zobacz Plan Rozwodu poniżej.':'<b>'+n+' z 7.</b> '+(n?'Pytania bez odpowiedzi':'Te pytania')+' to dobry początek rozmowy z psychologiem.'; };
-  $$('[data-dchk]').forEach(c=>c.onchange=()=>{ const k=+c.dataset.dchk; A.chk=(A.chk||[]).filter(x=>x!==k); if(c.checked) A.chk.push(k); save(); dsum(); }); dsum();
+  </div>`;
+  $('#res').innerHTML=gz(view==='list'?pList:pOffer);
+  if(on) window._sti=setInterval(()=>{ const e=$('#s-tm'); if(!e){ clearInterval(window._sti); return; } if(!act()){ clearInterval(window._sti); renderSoft(); return; } e.textContent=mmss(); },1000);
   $$('[data-sslot]').forEach(b=>b.onclick=()=>{ $$('[data-sslot]').forEach(x=>x.classList.toggle('on',x===b)); $('#s-buy').disabled=false; });
-  $('#s-buy').onclick=()=>{ $('#s-msg').textContent='W produkcie: przejście do płatności 470 zł na duo.pl i potwierdzenie terminu e-mailem.'; };
-  $('#s-tv').onclick=()=>playT(TA[6],0,'Gdy nie masz jeszcze pewności');
-  $('#s-div').onclick=()=>{ A.lean='likely'; A.done=false; const v=vis(); idx=Math.max(0,v.findIndex(q=>q.id==='lean')+1); save(); location.hash='quiz'; };
+  $('#s-buy').onclick=()=>{ $('#s-msg').textContent='W produkcie: przejście do płatności '+(act()?SD:SP)+' zł na duo.pl i potwierdzenie terminu e-mailem.'; };
+  const sk=$('#s-skip'); if(sk) sk.onclick=()=>{ A.sv='list'; save(); renderSoft(); window.scrollTo(0,0); };
+  if(view==='list'){
+    const sum=()=>{ const v=A.drv, e=$('#s-res'), t=drv.filter(d=>v[d[0]]!=null); if(!t.length){ e.innerHTML=''; return; }
+      const g=k=>v[k]==null?-1:v[k], top=t.slice().sort((a,b)=>v[b[0]]-v[a[0]])[0];
+      const txt=g('out')>=7&&g('fear')>=7?'Wygląda na to, że decyzję w dużej mierze znasz, a zatrzymuje Cię strach przed tym, co potem. Ten strach da się rozłożyć na konkretne sprawy i każdą z nich uporządkować.'
+        :g('care')>=7&&g('out')>=7?'Czujesz jedno i drugie naraz: chcesz odejść i wciąż Ci zależy. To częste i właśnie to najtrudniej rozplątać w pojedynkę.'
+        :g('care')>=7?'Wciąż Ci zależy. Zanim cokolwiek postanowisz, warto sprawdzić, czy da się to jeszcze naprawić.'
+        :g('kids')>=7?'Mocno kierują Tobą dzieci. Warto oddzielić to, co jest dla nich dobre, od tego, czego się obawiasz.'
+        :'To dobry punkt wyjścia do sesji porządkującej.';
+      e.innerHTML='<b>Najmocniej dziś: '+top[1].toLowerCase()+' ('+v[top[0]]+'/10).</b> '+txt+'<small>To nie diagnoza, tylko podsumowanie Twoich odpowiedzi.</small>'; };
+    $$('[data-drv]').forEach(r=>r.oninput=()=>{ A.drv[r.dataset.drv]=+r.value; $('#o-'+r.dataset.drv).textContent=r.value; save(); sum(); }); sum();
+    $('#s-tv').onclick=()=>playT(TA[6],0,'Gdy nie masz jeszcze pewności');
+    $('#s-div').onclick=()=>{ A.lean='likely'; A.done=false; const v=vis(); idx=Math.max(0,v.findIndex(q=>q.id==='lean')+1); save(); location.hash='quiz'; };
+  }
 }
 function renderF(){
   document.body.classList.add('fchatmode'); const VH=VAR==='h'; const VG=VAR==='g'||VH;
